@@ -2,7 +2,7 @@ import React from "react";
 import { Card, CardContent, CardActionArea, Typography, Button } from "@mui/material";
 import './MainContent.css'; 
 
-const MainContent = () => {
+export default function MainContent() {
   return (
     <div className="services-grid">
       {/* First Card */}
@@ -68,4 +68,3 @@ const MainContent = () => {
   );
 };
 
-export default MainContent;
