@@ -6,6 +6,8 @@ import MainContent from "./components/main/MainContent";
 import Footer from "./components/footer/Footer";
 import InsurancePlans from "./components/products/InsurancePlans";
 import axios from 'axios';
+import Layout from "./components/layout/Layout";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
 function App() {
   const url = "http://localhost:5125/api/v1/InsurancePlan/"
@@ -27,15 +29,50 @@ function App() {
   useEffect(()=>{
     getDataFromServer();
   }, []);
-  return (
-    <div className="App">
-      <NavBar />
-      <Home />
-      <MainContent />
-      <InsurancePlans response = {response}/>
-      <Footer/>
-    </div>
-  );
+
+  const router = createBrowserRouter([
+    {
+      path: "/",
+      element: <Layout />,
+      children: [
+        {index: true, element:<Home/>},
+        {
+          path: "/home",
+          element: <Home />,
+        },
+        {
+          path: "plans",
+          element:  <InsurancePlans
+          response = {response}
+        />
+        },
+        // {
+        //   path: "products/:productId",
+        //   element: <SingleProduct />,
+        // },
+        // {
+        //   path: "/wishlist",
+        //   element: <WishListPage wishList={wishList} />, 
+        // },
+        // {
+        //   path: "*",
+        //   element: <NotFoundPage/>,
+        // },
+      ]
+    },
+    
+  ]);
+  return <RouterProvider router={router} />;
+
+  // return (
+  //   <div className="App">
+  //     <NavBar />
+  //     <Home />
+  //     <MainContent />
+  //     <InsurancePlans response = {response}/>
+  //     <Footer/>
+  //   </div>
+  // );
 }
 
 export default App;
