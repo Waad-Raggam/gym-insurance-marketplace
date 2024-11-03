@@ -45,7 +45,7 @@ function App() {
           element:  <InsurancePlans
           response = {response}
         />
-        },
+        }, 
         // {
         //   path: "products/:productId",
         //   element: <SingleProduct />,

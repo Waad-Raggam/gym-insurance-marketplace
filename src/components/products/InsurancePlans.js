@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-
+import "./InsurancePlans.css";
 export default function InsurancePlans(props) {
   const { response } = props;
   // const [plans, setPlans] = useState([]);
@@ -32,14 +32,32 @@ export default function InsurancePlans(props) {
       <h1>Insurance Plans</h1>
       <ul>
         {Array.isArray(response) && response.length > 0 ? (
-          response.map((plan) => (
-            <li key={plan.insuranceId}>
-              <h2>{plan.planName}</h2>
-              <p>Monthly Premium: ${plan.monthlyPremium}</p>
-              <p>Coverage Type: {plan.coverageType}</p>
-              <p>Details: {plan.coverageDetails}</p>
-            </li>
-          ))
+          <table>
+            <thead>
+              <tr>
+                <th>Plan Name</th>
+                <th>Monthly Premium</th>
+                <th>Coverage Type</th>
+                <th>Coverage Details</th>
+              </tr>
+            </thead>
+            <tbody>
+              {response.map((plan) => (
+                <tr key={plan.insuranceId}>
+                  <td>{plan.planName}</td>
+                  <td>${plan.monthlyPremium}</td>
+                  <td>{plan.coverageType}</td>
+                  <td>
+                  <ul>
+                    {plan.coverageDetails.map((detail, index) => (
+                      <li key={index}>{detail}</li>
+                    ))}
+                  </ul>
+                </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         ) : (
           <li>No insurance plans available.</li>
         )}
