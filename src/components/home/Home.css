@@ -3,7 +3,7 @@
     background-size: cover;
     background-position: center;
     /* background-color: #1D1A05; */
-    height: 650px;
+    height: 100%;
     display: flex;
     flex-direction: column;
     justify-content: center;
