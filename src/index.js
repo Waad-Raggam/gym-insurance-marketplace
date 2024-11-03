@@ -6,19 +6,19 @@ import { ThemeProvider, createTheme } from '@mui/material/styles';
 const theme = createTheme({
   palette: {
     primary: {
-      main: '#1E3A8A', // Navy Blue
+      main: "#1D1A05", // Smoky black
     },
     secondary: {
-      main: '#38B2AC', // Teal
+      main: "#92140C", // Penn red
     },
     warning: {
-      main: '#F97316', // Orange
+      main: "#FFBA08", // Selective yellow
     },
     background: {
-      default: '#F3F4F6', // Light Gray
+      default: "#6D7275", // Dim gray
     },
     text: {
-      primary: '#333333', // Dark Gray for text
+      primary: "#E8EBF7", // Ghost white
     },
   },
 });
