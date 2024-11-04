@@ -7,6 +7,7 @@ import Footer from "./components/footer/Footer";
 import InsurancePlans from "./components/products/InsurancePlans";
 import axios from 'axios';
 import Layout from "./components/layout/Layout";
+import IndividualPlan from "./components/products/IndividualPlan";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
 function App() {
@@ -46,6 +47,10 @@ function App() {
           response = {response}
         />
         }, 
+        {
+          path: "plans/:planId",
+          element: <IndividualPlan />,
+        },
         // {
         //   path: "products/:productId",
         //   element: <SingleProduct />,

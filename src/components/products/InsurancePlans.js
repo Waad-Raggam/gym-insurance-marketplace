@@ -1,6 +1,8 @@
 import React from "react";
 import { Card, CardContent, CardActionArea, Typography } from "@mui/material";
-import './InsurancePlans.css';
+import "./InsurancePlans.css";
+import Button from "@mui/material/Button";
+import { Link } from "react-router-dom";
 
 export default function InsurancePlans(props) {
   const { response } = props;
@@ -10,7 +12,11 @@ export default function InsurancePlans(props) {
       <h1>Insurance Plans</h1>
       {Array.isArray(response) && response.length > 0 ? (
         response.map((plan) => (
-          <Card key={plan.insuranceId} className="card" sx={{ margin: '20px auto' }}>
+          <Card
+            key={plan.insuranceId}
+            className="card"
+            sx={{ margin: "20px auto" }}
+          >
             <CardActionArea>
               <CardContent>
                 <Typography variant="h5" gutterBottom>
@@ -32,11 +38,16 @@ export default function InsurancePlans(props) {
                   </ul>
                 </Typography>
               </CardContent>
+              <Link to={`${plan.insuranceId}`}>
+                <Button variant="outlined">View plan</Button>
+              </Link>
             </CardActionArea>
           </Card>
         ))
       ) : (
-        <Typography variant="body2" sx={{ color: '#E8EBF7' }}>No insurance plans available.</Typography>
+        <Typography variant="body2" sx={{ color: "#E8EBF7" }}>
+          No insurance plans available.
+        </Typography>
       )}
     </div>
   );
