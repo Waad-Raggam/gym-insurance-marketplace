@@ -19,6 +19,7 @@ export default function InsurancePlans(props) {
                 <Typography variant="body2">
                   Monthly Premium: ${plan.monthlyPremium}
                 </Typography>
+                <Typography variant="body2">{plan.planDescription}</Typography>
                 <Typography variant="body2">
                   Coverage Type: {plan.coverageType}
                 </Typography>
