@@ -9,6 +9,8 @@ import axios from 'axios';
 import Layout from "./components/layout/Layout";
 import IndividualPlan from "./components/products/IndividualPlan";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import UserRegistration from "./components/user/UserRegistration";
+import UserLogin from "./components/user/UserLogin";
 
 function App() {
   const url = "http://localhost:5125/api/v1/InsurancePlan/"
@@ -50,6 +52,14 @@ function App() {
         {
           path: "plans/:planId",
           element: <IndividualPlan />,
+        },
+        {
+          path: "/register",
+          element: <UserRegistration />,
+        },
+        {
+          path: "/login",
+          element: <UserLogin />,
         },
         // {
         //   path: "products/:productId",
