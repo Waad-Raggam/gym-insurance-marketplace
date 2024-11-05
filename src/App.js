@@ -5,29 +5,30 @@ import "./App.css";
 import MainContent from "./components/main/MainContent";
 import Footer from "./components/footer/Footer";
 import InsurancePlans from "./components/products/InsurancePlans";
-import axios from 'axios';
+import axios from "axios";
 import Layout from "./components/layout/Layout";
+import Cart from "./components/cart/Cart"
 import IndividualPlan from "./components/products/IndividualPlan";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
 function App() {
-  const url = "http://localhost:5125/api/v1/InsurancePlan/"
+  const url = "http://localhost:5125/api/v1/InsurancePlan/";
 
-  const[response, setResponse ] = useState("");
-
+  const [response, setResponse] = useState("");
 
   function getDataFromServer() {
-    axios.get(url)
-    .then((response) => {
-      console.log(response.data);
-      setResponse(response.data);
-    }) 
-    .catch((error)=>{
-      console.log("error " + error)
-    });
+    axios
+      .get(url)
+      .then((response) => {
+        console.log(response.data);
+        setResponse(response.data);
+      })
+      .catch((error) => {
+        console.log("error " + error);
+      });
   }
 
-  useEffect(()=>{
+  useEffect(() => {
     getDataFromServer();
   }, []);
 
@@ -36,36 +37,34 @@ function App() {
       path: "/",
       element: <Layout />,
       children: [
-        {index: true, element:<Home/>},
+        { index: true, element: <Home /> },
         {
           path: "/home",
           element: <Home />,
         },
         {
           path: "plans",
-          element:  <InsurancePlans
-          response = {response}
-        />
-        }, 
+          element: <InsurancePlans response={response} />,
+        },
         {
           path: "plans/:planId",
           element: <IndividualPlan />,
         },
+        { path: "cart", element: <Cart /> },
         // {
         //   path: "products/:productId",
         //   element: <SingleProduct />,
         // },
         // {
         //   path: "/wishlist",
-        //   element: <WishListPage wishList={wishList} />, 
+        //   element: <WishListPage wishList={wishList} />,
         // },
         // {
         //   path: "*",
         //   element: <NotFoundPage/>,
         // },
-      ]
+      ],
     },
-    
   ]);
   return <RouterProvider router={router} />;
 

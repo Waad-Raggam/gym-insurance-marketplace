@@ -1,6 +1,7 @@
 import React from 'react';
 import { AppBar, Toolbar, Typography, Button, Box } from '@mui/material';
 import SearchInsurancePlans from '../search/SearchInsurancePlans';
+import { Link } from "react-router-dom";
 
 export default function Navbar() {
   return (
@@ -17,6 +18,7 @@ export default function Navbar() {
             <Button color="inherit" href="#about">About Us</Button>
             <Button color="inherit" href="#services">Services</Button>
             <Button color="inherit" href="#contact">Contact</Button>
+            <Link to="/cart">Cart</Link>
             <Button color="warning" variant="contained" href="">Login</Button>
           </Box>
         </Toolbar>
