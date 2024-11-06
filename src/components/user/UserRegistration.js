@@ -1,18 +1,18 @@
 import { TextField } from "@mui/material";
 import React, { useState } from "react";
 import { AppBar, Toolbar, Typography, Button, Box } from "@mui/material";
-import axios from 'axios';
+import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
 export default function UserRegistration() {
   const [userInformation, setUserInformation] = useState({
     name: "",
     email: "",
-    phoneNumber:"",
+    phoneNumber: "",
     password: "",
   });
-  const navigate = useNavigate(); 
-  
+  const navigate = useNavigate();
+
   function onChangeHandlerName(event) {
     setUserInformation({ ...userInformation, name: event.target.value });
   }
@@ -28,7 +28,7 @@ export default function UserRegistration() {
 
   //   console.log(userInformation, "user");
 
-  function registerNewUser(params) {
+  function registerNewUser() {
     const signUpUrl = "http://localhost:5125/api/v1/User/SignUp";
     axios
       .post(signUpUrl, userInformation)
@@ -39,22 +39,22 @@ export default function UserRegistration() {
       .catch((error) => {
         console.log(error);
         if (error.status === 400) {
-            if(error.response.data.errors.Name){
-                alert(error.response.data.errors.Name[0]);
-                return;
-            }
-            if(error.response.data.errors.Email){
-                alert(error.response.data.errors.Email[0]);
-                return;
-            }
-            if(error.response.data.errors.Password){
-                alert(error.response.data.errors.Password[0]);
-                return;
-            }
-            if(error.response.data.errors.PhoneNumber){
-                alert(error.response.data.errors.PhoneNumber[0]);
-                return;
-            }
+          if (error.response.data.errors.Name) {
+            alert(error.response.data.errors.Name[0]);
+            return;
+          }
+          if (error.response.data.errors.Email) {
+            alert(error.response.data.errors.Email[0]);
+            return;
+          }
+          if (error.response.data.errors.Password) {
+            alert(error.response.data.errors.Password[0]);
+            return;
+          }
+          if (error.response.data.errors.PhoneNumber) {
+            alert(error.response.data.errors.PhoneNumber[0]);
+            return;
+          }
         }
       });
   }
