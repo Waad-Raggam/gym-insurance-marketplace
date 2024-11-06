@@ -1,46 +1,47 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as yup from "yup";
 import { AppBar, Toolbar, Typography, Button, Box } from "@mui/material";
-import { TextField } from "@mui/material";
-import Input from "@mui/material/Input";
-import InputLabel from "@mui/material/InputLabel";
-import FormControl from "@mui/material/FormControl";
-import InputAdornment from "@mui/material/InputAdornment";
-import IconButton from "@mui/material/IconButton";
+import { TextField, Input, InputLabel, FormControl, InputAdornment, IconButton } from "@mui/material";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 
+const schema = yup.object({
+  email: yup.string().email("Invalid email format").required("Email is required"),
+  password: yup
+    .string()
+    .required("Password is required")
+    .min(8, "Password must be at least 8 characters")
+    .matches(
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
+      "Password must have one uppercase, one lowercase, one number, and one special character"
+    ),
+}).required();
+
 export default function UserLogin() {
   const navigate = useNavigate();
-  const [showPassword, setShowPassword] = React.useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
-  const [userLogin, setUserLogin] = useState({
-    email: "",
-    password: "",
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    resolver: yupResolver(schema),
   });
-
-  function onChangeHandlerEmailLogin(event) {
-    setUserLogin({ ...userLogin, email: event.target.value });
-  }
-  function onChangeHandlerPasswordLogin(event) {
-    setUserLogin({ ...userLogin, password: event.target.value });
-  }
 
   const handleClickShowPassword = () => setShowPassword((show) => !show);
 
-  const handleMouseDownPassword = (event) => {
-    event.preventDefault();
-  };
+  const handleMouseDownPassword = (event) => event.preventDefault();
 
-  const handleMouseUpPassword = (event) => {
-    event.preventDefault();
-  };
-
-  function loginUser() {
+  const onSubmit = (data) => {
     const loginUrl = "http://localhost:5125/api/v1/User/LogIn";
     axios
-      .post(loginUrl, userLogin)
+      .post(loginUrl, data)
       .then((response) => {
         console.log(response, "logged in user");
         localStorage.setItem("token", response.data);
@@ -51,50 +52,53 @@ export default function UserLogin() {
         if (error.status === 400) {
           if (error.response.data.errors.Email) {
             alert(error.response.data.errors.Email[0]);
-            return;
-          }
-          if (error.response.data.errors.Password) {
+          } else if (error.response.data.errors.Password) {
             alert(error.response.data.errors.Password[0]);
-            return;
           }
         }
       });
-  }
+  };
 
   return (
     <div>
       <h1>User Login</h1>
-      <TextField
-        id="email"
-        label="Email"
-        variant="standard"
-        onChange={onChangeHandlerEmailLogin}
-      />
-      <FormControl sx={{ m: 1, width: "25ch" }} variant="standard">
-        <InputLabel htmlFor="standard-adornment-password">Password</InputLabel>
-        <Input
-          id="standard-adornment-password"
-          type={showPassword ? "text" : "password"}
-          onChange={onChangeHandlerPasswordLogin}
-          endAdornment={
-            <InputAdornment position="end">
-              <IconButton
-                aria-label={
-                  showPassword ? "hide the password" : "display the password"
-                }
-                onClick={handleClickShowPassword}
-                onMouseDown={handleMouseDownPassword}
-                onMouseUp={handleMouseUpPassword}
-              >
-                {showPassword ? <VisibilityOff /> : <Visibility />}
-              </IconButton>
-            </InputAdornment>
-          }
+      <form onSubmit={handleSubmit(onSubmit)}>
+        {/* Email Field */}
+        <TextField
+          label="Email"
+          variant="standard"
+          {...register("email")}
+          error={!!errors.email}
+          helperText={errors.email?.message}
         />
-      </FormControl>
-      <Button color="warning" variant="contained" onClick={loginUser}>
-        Login
-      </Button>
+
+        {/* Password Field */}
+        <FormControl sx={{ m: 1, width: "25ch" }} variant="standard">
+          <InputLabel htmlFor="standard-adornment-password">Password</InputLabel>
+          <Input
+            id="standard-adornment-password"
+            type={showPassword ? "text" : "password"}
+            {...register("password")}
+            error={!!errors.password}
+            endAdornment={
+              <InputAdornment position="end">
+                <IconButton
+                  onClick={handleClickShowPassword}
+                  onMouseDown={handleMouseDownPassword}
+                >
+                  {showPassword ? <VisibilityOff /> : <Visibility />}
+                </IconButton>
+              </InputAdornment>
+            }
+          />
+          <p style={{ color: "red" }}>{errors.password?.message}</p>
+        </FormControl>
+
+        {/* Submit Button */}
+        <Button color="warning" variant="contained" type="submit">
+          Login
+        </Button>
+      </form>
     </div>
   );
 }
