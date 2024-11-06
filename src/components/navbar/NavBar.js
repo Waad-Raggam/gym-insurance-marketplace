@@ -1,6 +1,7 @@
-import React from 'react';
-import { AppBar, Toolbar, Typography, Button, Box } from '@mui/material';
-import SearchInsurancePlans from '../search/SearchInsurancePlans';
+import React from "react";
+import { AppBar, Toolbar, Typography, Button, Box } from "@mui/material";
+import SearchInsurancePlans from "../search/SearchInsurancePlans";
+import { Link } from "react-router-dom";
 
 export default function Navbar() {
   return (
@@ -10,17 +11,27 @@ export default function Navbar() {
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
             Gym Insurance
           </Typography>
-          <Box sx={{ position: 'relative' }}>
+          <Box sx={{ position: "relative" }}>
             <SearchInsurancePlans />
           </Box>
-          <Box sx={{ display: 'flex', gap: 2 }}>
-            <Button color="inherit" href="#about">About Us</Button>
-            <Button color="inherit" href="#services">Services</Button>
-            <Button color="inherit" href="#contact">Contact</Button>
-            <Button color="warning" variant="contained" href="">Login</Button>
+          <Box sx={{ display: "flex", gap: 2 }}>
+            <Button color="inherit" href="#about">
+              About Us
+            </Button>
+            <Button color="inherit" href="#services">
+              Services
+            </Button>
+            <Button color="inherit" href="#contact">
+              Contact
+            </Button>
+            <Link to="/register">
+              <Button color="warning" variant="contained">
+                Login
+              </Button>
+            </Link>
           </Box>
         </Toolbar>
       </AppBar>
     </>
   );
-};
+}
