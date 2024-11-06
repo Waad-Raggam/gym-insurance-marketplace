@@ -2,6 +2,7 @@ import { TextField } from "@mui/material";
 import React, { useState } from "react";
 import { AppBar, Toolbar, Typography, Button, Box } from "@mui/material";
 import axios from 'axios';
+import { useNavigate } from "react-router-dom";
 
 export default function UserRegistration() {
   const [userInformation, setUserInformation] = useState({
@@ -10,7 +11,8 @@ export default function UserRegistration() {
     phoneNumber:"",
     password: "",
   });
-
+  const navigate = useNavigate(); 
+  
   function onChangeHandlerName(event) {
     setUserInformation({ ...userInformation, name: event.target.value });
   }
@@ -30,7 +32,10 @@ export default function UserRegistration() {
     const signUpUrl = "http://localhost:5125/api/v1/User/SignUp";
     axios
       .post(signUpUrl, userInformation)
-      .then((response) => console.log(response, "new user"))
+      .then((response) => {
+        console.log(response, "new user");
+        navigate("/login");
+      })
       .catch((error) => {
         console.log(error);
         if (error.status === 400) {
