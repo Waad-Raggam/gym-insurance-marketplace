@@ -1,93 +1,94 @@
 import React, { useEffect, useState } from "react";
-import NavBar from "./components/navbar/NavBar";
-import Home from "./components/home/Home";
-import "./App.css";
-import MainContent from "./components/main/MainContent";
-import Footer from "./components/footer/Footer";
-import InsurancePlans from "./components/products/InsurancePlans";
-import axios from 'axios';
-import Layout from "./components/layout/Layout";
-import IndividualPlan from "./components/products/IndividualPlan";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import axios from "axios";
+import Layout from "./components/layout/Layout";
+import ProtectedRoute from "./components/user/ProtectedRoute";
+import Home from "./components/home/Home";
+import InsurancePlans from "./components/products/InsurancePlans";
+import IndividualPlan from "./components/products/IndividualPlan";
 import UserRegistration from "./components/user/UserRegistration";
 import UserLogin from "./components/user/UserLogin";
+import UserProfile from "./components/user/UserProfile";
+import Dashboard  from "./components/dashboard/dashboard";
 
 function App() {
-  const url = "http://localhost:5125/api/v1/InsurancePlan/"
+  const [response, setResponse] = useState("");
+  const [userData, setUserData] = useState(null);
+  const [isUserDataLoading, setIsUserDataLoading] = useState(true);
 
-  const[response, setResponse ] = useState("");
+  const url = "http://localhost:5125/api/v1/InsurancePlan/";
+  const susUrl = "http://localhost:5125/api/v1/User/Profile/";
 
+  useEffect(() => {
+    getDataFromServer();
+    getUserData();
+  }, []);
 
   function getDataFromServer() {
-    axios.get(url)
-    .then((response) => {
-      console.log(response.data);
-      setResponse(response.data);
-    }) 
-    .catch((error)=>{
-      console.log("error " + error)
-    });
+    axios
+      .get(url)
+      .then((response) => setResponse(response.data))
+      .catch((error) => console.log("Error: ", error));
   }
 
-  useEffect(()=>{
-    getDataFromServer();
-  }, []);
+  function getUserData() {
+    setIsUserDataLoading(true);
+    const token = localStorage.getItem("token");
+    if (!token) return setIsUserDataLoading(false);
+
+    axios
+      .get(susUrl, { headers: { Authorization: `Bearer ${token}` } })
+      .then((response) => {
+        console.log("User logged in:", response.data); // Debug log
+        setUserData(response.data); // Ensure this sets correctly
+        setIsUserDataLoading(false);
+      })
+      .catch((error) => {
+        setIsUserDataLoading(false);
+        console.log("Error: ", error);
+      });
+  }
+
+  const isAuthenticatedUser = Boolean(userData && localStorage.getItem("token"));
+  const isAdmin = userData?.role === "Admin";
 
   const router = createBrowserRouter([
     {
       path: "/",
-      element: <Layout />,
+      element: <Layout isAuthenticated={isAuthenticatedUser} userData={userData} />,
       children: [
-        {index: true, element:<Home/>},
+        { index: true, element: <Home /> },
+        { path: "plans", element: <InsurancePlans response={response} /> },
+        { path: "plans/:planId", element: <IndividualPlan /> },
+        { path: "/register", element: <UserRegistration /> },
+        { path: "/login", element: <UserLogin /> },
         {
-          path: "/home",
-          element: <Home />,
+          path: "/profile",
+          element: (
+            <ProtectedRoute
+              isUserDataLoading={isUserDataLoading}
+              isAuthenticated={isAuthenticatedUser}
+              element={<UserProfile userData={userData} />}
+            />
+          ),
         },
         {
-          path: "plans",
-          element:  <InsurancePlans
-          response = {response}
-        />
-        }, 
-        {
-          path: "plans/:planId",
-          element: <IndividualPlan />,
+          path: "/dashboard",
+          element: (
+            <ProtectedRoute
+              isUserDataLoading={isUserDataLoading}
+              isAuthenticated={isAuthenticatedUser}
+              isAdmin={isAdmin}
+              requiresAdmin={true}
+              element={<Dashboard />}
+            />
+          ),
         },
-        {
-          path: "/register",
-          element: <UserRegistration />,
-        },
-        {
-          path: "/login",
-          element: <UserLogin />,
-        },
-        // {
-        //   path: "products/:productId",
-        //   element: <SingleProduct />,
-        // },
-        // {
-        //   path: "/wishlist",
-        //   element: <WishListPage wishList={wishList} />, 
-        // },
-        // {
-        //   path: "*",
-        //   element: <NotFoundPage/>,
-        // },
-      ]
+      ],
     },
-    
   ]);
-  return <RouterProvider router={router} />;
 
-  // return (
-  //   <div className="App">
-  //     <NavBar />
-  //     <Home />
-  //     <MainContent />
-  //     <InsurancePlans response = {response}/>
-  //     <Footer/>
-  //   </div>
-  // );
+  return <RouterProvider router={router} />;
 }
 
 export default App;

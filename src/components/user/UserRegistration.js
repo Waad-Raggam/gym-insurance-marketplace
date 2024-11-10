@@ -6,23 +6,26 @@ import * as yup from "yup";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
-
-const schema = yup.object({
-  name: yup.string().required("Name is required"),
-  email: yup.string().email("Invalid email format").required("Email is required"),
-  phoneNumber: yup
-    .string()
-    .matches(/^[0-9]{10}$/, "Phone number must be 10 digits")
-    .required("Phone number is required"),
-  password: yup
-    .string()
-    .required("Password is required")
-    .min(8, "Password must be at least 8 characters")
-    .matches(
-      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
-      "Password must have one uppercase, one lowercase, one number, and one special character"
-    ),
-}).required();
+// Add a new validation field for role in the schema
+const schema = yup
+  .object({
+    name: yup.string().required("Name is required"),
+    email: yup
+      .string()
+      .email("Invalid email format")
+      .required("Email is required"),
+    phoneNumber: yup.string().required("Phone number is required"),
+    password: yup
+      .string()
+      .required("Password is required")
+      .min(8, "Password must be at least 8 characters")
+      .matches(
+        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
+        "Password must have one uppercase, one lowercase, one number, and one special character"
+      ),
+    role: yup.string().required("Role is required"), // Add role validation
+  })
+  .required();
 
 export default function UserRegistration() {
   const navigate = useNavigate();
@@ -35,7 +38,6 @@ export default function UserRegistration() {
     resolver: yupResolver(schema),
   });
 
-  
   const onSubmit = (data) => {
     const signUpUrl = "http://localhost:5125/api/v1/User/SignUp";
     axios
@@ -100,6 +102,21 @@ export default function UserRegistration() {
           error={!!errors.password}
           helperText={errors.password?.message}
         />
+        <TextField
+          id="role"
+          label="Role"
+          select
+          SelectProps={{
+            native: true,
+          }}
+          {...register("role")}
+          error={!!errors.role}
+          helperText={errors.role?.message}
+        >
+          <option value="">Select Role</option>
+          <option value="Customer">Customer</option>
+          <option value="Admin">Admin</option>
+        </TextField>
 
         <Button color="warning" variant="contained" type="submit">
           Sign up
