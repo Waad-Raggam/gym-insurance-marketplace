@@ -9,15 +9,15 @@ import IndividualPlan from "./components/products/IndividualPlan";
 import UserRegistration from "./components/user/UserRegistration";
 import UserLogin from "./components/user/UserLogin";
 import UserProfile from "./components/user/UserProfile";
-import Dashboard  from "./components/dashboard/dashboard";
+import Dashboard from "./components/dashboard/dashboard";
 
 function App() {
   const [response, setResponse] = useState("");
   const [userData, setUserData] = useState(null);
   const [isUserDataLoading, setIsUserDataLoading] = useState(true);
 
-  const url = "http://localhost:5125/api/v1/InsurancePlan/";
-  const susUrl = "http://localhost:5125/api/v1/User/Profile/";
+  const productUrl = "http://localhost:5125/api/v1/InsurancePlan/";
+  const profileUrl = "http://localhost:5125/api/v1/User/Profile/";
 
   useEffect(() => {
     getDataFromServer();
@@ -26,7 +26,7 @@ function App() {
 
   function getDataFromServer() {
     axios
-      .get(url)
+      .get(productUrl)
       .then((response) => setResponse(response.data))
       .catch((error) => console.log("Error: ", error));
   }
@@ -37,10 +37,10 @@ function App() {
     if (!token) return setIsUserDataLoading(false);
 
     axios
-      .get(susUrl, { headers: { Authorization: `Bearer ${token}` } })
+      .get(profileUrl, { headers: { Authorization: `Bearer ${token}` } })
       .then((response) => {
-        console.log("User logged in:", response.data); // Debug log
-        setUserData(response.data); // Ensure this sets correctly
+        console.log("User logged in:", response.data);
+        setUserData(response.data);
         setIsUserDataLoading(false);
       })
       .catch((error) => {
@@ -49,13 +49,17 @@ function App() {
       });
   }
 
-  const isAuthenticatedUser = Boolean(userData && localStorage.getItem("token"));
+  const isAuthenticatedUser = Boolean(
+    userData && localStorage.getItem("token")
+  );
   const isAdmin = userData?.role === "Admin";
 
   const router = createBrowserRouter([
     {
       path: "/",
-      element: <Layout isAuthenticated={isAuthenticatedUser} userData={userData} />,
+      element: (
+        <Layout isAuthenticated={isAuthenticatedUser} userData={userData} />
+      ),
       children: [
         { index: true, element: <Home /> },
         { path: "plans", element: <InsurancePlans response={response} /> },
@@ -80,7 +84,7 @@ function App() {
               isAuthenticated={isAuthenticatedUser}
               isAdmin={isAdmin}
               requiresAdmin={true}
-              element={<Dashboard />}
+              element={<Dashboard response={response} />}
             />
           ),
         },
