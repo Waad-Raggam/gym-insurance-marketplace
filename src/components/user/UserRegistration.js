@@ -1,37 +1,47 @@
-import { TextField } from "@mui/material";
-import React, { useState } from "react";
-import { AppBar, Toolbar, Typography, Button, Box } from "@mui/material";
+import { TextField, Button } from "@mui/material";
+import React from "react";
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as yup from "yup";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
+// Add a new validation field for role in the schema
+const schema = yup
+  .object({
+    name: yup.string().required("Name is required"),
+    email: yup
+      .string()
+      .email("Invalid email format")
+      .required("Email is required"),
+    phoneNumber: yup.string().required("Phone number is required"),
+    password: yup
+      .string()
+      .required("Password is required")
+      .min(8, "Password must be at least 8 characters")
+      .matches(
+        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
+        "Password must have one uppercase, one lowercase, one number, and one special character"
+      ),
+    role: yup.string().required("Role is required"), // Add role validation
+  })
+  .required();
+
 export default function UserRegistration() {
-  const [userInformation, setUserInformation] = useState({
-    name: "",
-    email: "",
-    phoneNumber: "",
-    password: "",
-  });
   const navigate = useNavigate();
 
-  function onChangeHandlerName(event) {
-    setUserInformation({ ...userInformation, name: event.target.value });
-  }
-  function onChangeHandlerEmail(event) {
-    setUserInformation({ ...userInformation, email: event.target.value });
-  }
-  function onChangeHandlerPhoneNumber(event) {
-    setUserInformation({ ...userInformation, phoneNumber: event.target.value });
-  }
-  function onChangeHandlerPassword(event) {
-    setUserInformation({ ...userInformation, password: event.target.value });
-  }
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    resolver: yupResolver(schema),
+  });
 
-  //   console.log(userInformation, "user");
-
-  function registerNewUser() {
+  const onSubmit = (data) => {
     const signUpUrl = "http://localhost:5125/api/v1/User/SignUp";
     axios
-      .post(signUpUrl, userInformation)
+      .post(signUpUrl, data)
       .then((response) => {
         console.log(response, "new user");
         navigate("/login");
@@ -39,57 +49,79 @@ export default function UserRegistration() {
       .catch((error) => {
         console.log(error);
         if (error.status === 400) {
-          if (error.response.data.errors.Name) {
-            alert(error.response.data.errors.Name[0]);
-            return;
-          }
-          if (error.response.data.errors.Email) {
-            alert(error.response.data.errors.Email[0]);
-            return;
-          }
-          if (error.response.data.errors.Password) {
-            alert(error.response.data.errors.Password[0]);
-            return;
-          }
-          if (error.response.data.errors.PhoneNumber) {
-            alert(error.response.data.errors.PhoneNumber[0]);
-            return;
-          }
+          const { errors } = error.response.data;
+          if (errors.Name) alert(errors.Name[0]);
+          if (errors.Email) alert(errors.Email[0]);
+          if (errors.Password) alert(errors.Password[0]);
+          if (errors.PhoneNumber) alert(errors.PhoneNumber[0]);
         }
       });
-  }
+  };
 
   return (
     <div>
       <h1>User Registration</h1>
-      <TextField
-        id="name"
-        label="Name"
-        variant="standard"
-        onChange={onChangeHandlerName}
-      />
-      <TextField
-        id="email"
-        label="Email"
-        variant="standard"
-        onChange={onChangeHandlerEmail}
-      />
-      <TextField
-        id="phoneNumber"
-        label="Phone Number"
-        variant="standard"
-        onChange={onChangeHandlerPhoneNumber}
-      />
-      <TextField
-        id="password"
-        label="Password"
-        variant="standard"
-        onChange={onChangeHandlerPassword}
-      />
+      <form onSubmit={handleSubmit(onSubmit)}>
+        {/* Name Field */}
+        <TextField
+          id="name"
+          label="Name"
+          variant="standard"
+          {...register("name")}
+          error={!!errors.name}
+          helperText={errors.name?.message}
+        />
 
-      <Button color="warning" variant="contained" onClick={registerNewUser}>
-        Sign up
-      </Button>
+        {/* Email Field */}
+        <TextField
+          id="email"
+          label="Email"
+          variant="standard"
+          {...register("email")}
+          error={!!errors.email}
+          helperText={errors.email?.message}
+        />
+
+        {/* Phone Number Field */}
+        <TextField
+          id="phoneNumber"
+          label="Phone Number"
+          variant="standard"
+          {...register("phoneNumber")}
+          error={!!errors.phoneNumber}
+          helperText={errors.phoneNumber?.message}
+        />
+
+        {/* Password Field */}
+        <TextField
+          id="password"
+          label="Password"
+          variant="standard"
+          type="password"
+          {...register("password")}
+          error={!!errors.password}
+          helperText={errors.password?.message}
+        />
+        <TextField
+          id="role"
+          label="Role"
+          select
+          SelectProps={{
+            native: true,
+          }}
+          {...register("role")}
+          error={!!errors.role}
+          helperText={errors.role?.message}
+        >
+          <option value="">Select Role</option>
+          <option value="Customer">Customer</option>
+          <option value="Admin">Admin</option>
+        </TextField>
+
+        <Button color="warning" variant="contained" type="submit">
+          Sign up
+        </Button>
+      </form>
     </div>
   );
 }
