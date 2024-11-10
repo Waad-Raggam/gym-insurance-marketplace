@@ -69,10 +69,87 @@ Row.propTypes = {
 };
 
 export default function Dashboard(props) {
-//   const { productsData, usersData, ordersData } = props;
-  const { productsData, usersData } = props;
+  //   const { productsData, usersData, ordersData } = props;
+  const { productsData, usersData, onDeleteUser } = props;
   const [view, setView] = useState("users");
+  const [newUser, setNewUser] = useState({ name: "", email: "", role: "" });
+  const [editingUser, setEditingUser] = useState(null);
   console.log("Received Users Data in Dashboard:", usersData);
+
+  const handleDeleteUser = (userId) => onDeleteUser(userId);
+  const renderUsersTable = () => (
+    <>
+      <TableContainer component={Paper}>
+        <Table aria-label="users table">
+          <TableHead>
+            <TableRow>
+              <TableCell>User ID</TableCell>
+              <TableCell>Username</TableCell>
+              <TableCell>Email</TableCell>
+              <TableCell>Role</TableCell>
+              <TableCell>Actions</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {usersData.map((user) => (
+              <TableRow key={user.userId}>
+                <TableCell>{user.userId}</TableCell>
+                <TableCell>{user.name}</TableCell>
+                <TableCell>{user.email}</TableCell>
+                <TableCell>{user.role}</TableCell>
+                <TableCell>
+                  <Button onClick={() => setEditingUser(user)}>Edit</Button>
+                  <Button
+                    color="error"
+                    onClick={() => handleDeleteUser(user.userId)}
+                  >
+                    Delete
+                  </Button>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+      {/* {editingUser ? (
+        <Box mt={2}>
+          <Typography>Edit User</Typography>
+          <TextField label="Name" value={editingUser.name} onChange={(e) => setEditingUser({ ...editingUser, name: e.target.value })} />
+          <TextField label="Email" value={editingUser.email} onChange={(e) => setEditingUser({ ...editingUser, email: e.target.value })} />
+          <Button>Save</Button>
+        </Box>
+      ) : (
+        <Box mt={2}>
+          <Typography>Add New User</Typography>
+          <TextField label="Name" value={newUser.name} onChange={(e) => setNewUser({ ...newUser, name: e.target.value })} />
+          <TextField label="Email" value={newUser.email} onChange={(e) => setNewUser({ ...newUser, email: e.target.value })} />
+          <Button>Add</Button>
+        </Box>
+      )} */}
+    </>
+  );
+  const renderProductsTable = () => (
+    <>
+      <TableContainer component={Paper}>
+        <Table aria-label="collapsible table">
+          <TableHead>
+            <TableRow>
+              <TableCell />
+              <TableCell>Plan Name</TableCell>
+              <TableCell>Coverage Type</TableCell>
+              <TableCell align="right">Monthly Premium</TableCell>
+              <TableCell>Description</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {productsData.map((plan) => (
+              <Row key={plan.insuranceId} plan={plan} />
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+    </>
+  );
 
   const renderTable = () => {
     switch (view) {
@@ -157,18 +234,10 @@ export default function Dashboard(props) {
       <Typography variant="h4" gutterBottom>
         Dashboard
       </Typography>
-      <Box sx={{ display: "flex", gap: 2, mb: 2 }}>
-        <Button variant={view === "products" ? "contained" : "outlined"} onClick={() => setView("products")}>
-          Products
-        </Button>
-        <Button variant={view === "users" ? "contained" : "outlined"} onClick={() => setView("users")}>
-          Users
-        </Button>
-        <Button variant={view === "orders" ? "contained" : "outlined"} onClick={() => setView("orders")}>
-          Orders
-        </Button>
-      </Box>
-      {renderTable()}
+      <Button onClick={() => setView("products")}>Products</Button>
+      <Button onClick={() => setView("users")}>Users</Button>
+      {view === "users" && renderUsersTable()}
+      {view === "products" && renderProductsTable()}
     </Box>
   );
 }
@@ -176,5 +245,5 @@ export default function Dashboard(props) {
 Dashboard.propTypes = {
   productsData: PropTypes.array.isRequired,
   usersData: PropTypes.array.isRequired,
-//   ordersData: PropTypes.array.isRequired,
+  //   ordersData: PropTypes.array.isRequired,
 };

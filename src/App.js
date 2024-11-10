@@ -9,7 +9,7 @@ import IndividualPlan from "./components/products/IndividualPlan";
 import UserRegistration from "./components/user/UserRegistration";
 import UserLogin from "./components/user/UserLogin";
 import UserProfile from "./components/user/UserProfile";
-import Dashboard from "./components/dashboard/dashboard";
+import Dashboard from "./components/dashboard/Dashboard";
 
 function App() {
   const [response, setResponse] = useState("");
@@ -69,6 +69,17 @@ function App() {
         console.log("Error fetching users:", error);
       });
   }
+  const deleteUser = (userId) => {
+    const token = localStorage.getItem("token");
+    axios
+      .delete(`${usersUrl}${userId}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      .then(() => {
+        setAllUsersData(allUsersData.filter(user => user.userId !== userId));
+      })
+      .catch((error) => console.log("Error deleting user:", error));
+  };
   
   const isAuthenticatedUser = Boolean(
     userData && localStorage.getItem("token")
@@ -105,7 +116,7 @@ function App() {
               isAuthenticated={isAuthenticatedUser}
               isAdmin={isAdmin}
               requiresAdmin={true}
-              element={<Dashboard productsData={response} usersData = {allUsersData} />}
+              element={<Dashboard productsData={response} usersData = {allUsersData} onDeleteUser={deleteUser} />}
             />
           ),
         },
