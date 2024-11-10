@@ -1,9 +1,18 @@
 import React from "react";
 import { AppBar, Toolbar, Typography, Button, Box } from "@mui/material";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import SearchInsurancePlans from "../search/SearchInsurancePlans";
 
 export default function Navbar({ isAuthenticated, userData }) {
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    console.log("Logged in user token before sign out:", localStorage.getItem("token"));
+    localStorage.removeItem("token");
+    console.log("Logged in user token after sign out:", localStorage.getItem("token"));
+    navigate("/login");
+  };
+
   return (
     <AppBar position="sticky" color="primary">
       <Toolbar>
@@ -14,12 +23,24 @@ export default function Navbar({ isAuthenticated, userData }) {
           <SearchInsurancePlans />
         </Box>
         <Box sx={{ display: "flex", gap: 2 }}>
-          <Button color="inherit" component={Link} to="#about">About Us</Button>
-          <Button color="inherit" component={Link} to="#services">Services</Button>
-          <Button color="inherit" component={Link} to="#contact">Contact</Button>
+          <Button color="inherit" component={Link} to="#about">
+            About Us
+          </Button>
+          <Button color="inherit" component={Link} to="#services">
+            Services
+          </Button>
+          <Button color="inherit" component={Link} to="#contact">
+            Contact
+          </Button>
           {isAuthenticated && userData?.role === "Admin" ? (
             <Button component={Link} to="/profile" color="warning" variant="contained">
               Profile
+            </Button>
+          ) : null}
+
+          {isAuthenticated ? (
+            <Button onClick={handleLogout} color="warning" variant="contained">
+              Logout
             </Button>
           ) : (
             <Button component={Link} to="/login" color="warning" variant="contained">
