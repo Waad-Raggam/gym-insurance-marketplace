@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import Box from "@mui/material/Box";
 import Collapse from "@mui/material/Collapse";
 import IconButton from "@mui/material/IconButton";
+import Button from "@mui/material/Button";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -68,29 +69,111 @@ Row.propTypes = {
 };
 
 export default function Dashboard(props) {
-  const { response } = props;
-  if (!response) {
-    return <p>Loading...</p>;
-  }
+//   const { productsData, usersData, ordersData } = props;
+  const { productsData } = props;
+  const [view, setView] = useState("products");
+
+  const renderTable = () => {
+    switch (view) {
+      case "products":
+        return (
+          <TableContainer component={Paper}>
+            <Table aria-label="collapsible table">
+              <TableHead>
+                <TableRow>
+                  <TableCell />
+                  <TableCell>Plan Name</TableCell>
+                  <TableCell>Coverage Type</TableCell>
+                  <TableCell align="right">Monthly Premium</TableCell>
+                  <TableCell>Description</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {productsData.map((plan) => (
+                  <Row key={plan.insuranceId} plan={plan} />
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        );
+      case "users":
+        return (
+          <TableContainer component={Paper}>
+            <Table aria-label="users table">
+              <TableHead>
+                <TableRow>
+                  <TableCell>User ID</TableCell>
+                  <TableCell>Username</TableCell>
+                  <TableCell>Email</TableCell>
+                  <TableCell>Role</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {/* {usersData.map((user) => (
+                  <TableRow key={user.userId}>
+                    <TableCell>{user.userId}</TableCell>
+                    <TableCell>{user.username}</TableCell>
+                    <TableCell>{user.email}</TableCell>
+                    <TableCell>{user.role}</TableCell>
+                  </TableRow>
+                ))} */}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        );
+      case "orders":
+        return (
+          <TableContainer component={Paper}>
+            <Table aria-label="orders table">
+              <TableHead>
+                <TableRow>
+                  <TableCell>Order ID</TableCell>
+                  <TableCell>Product</TableCell>
+                  <TableCell>Quantity</TableCell>
+                  <TableCell>Total Price</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {/* {ordersData.map((order) => (
+                  <TableRow key={order.orderId}>
+                    <TableCell>{order.orderId}</TableCell>
+                    <TableCell>{order.productName}</TableCell>
+                    <TableCell>{order.quantity}</TableCell>
+                    <TableCell>{order.totalPrice}</TableCell>
+                  </TableRow>
+                ))} */}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        );
+      default:
+        return null;
+    }
+  };
 
   return (
-    <TableContainer component={Paper}>
-      <Table aria-label="collapsible table">
-        <TableHead>
-          <TableRow>
-            <TableCell />
-            <TableCell>Plan Name</TableCell>
-            <TableCell>Coverage Type</TableCell>
-            <TableCell align="right">Monthly Premium</TableCell>
-            <TableCell>Description</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {response.map((plan) => (
-            <Row key={plan.insuranceId} plan={plan} />
-          ))}
-        </TableBody>
-      </Table>
-    </TableContainer>
+    <Box>
+      <Typography variant="h4" gutterBottom>
+        Dashboard
+      </Typography>
+      <Box sx={{ display: "flex", gap: 2, mb: 2 }}>
+        <Button variant={view === "products" ? "contained" : "outlined"} onClick={() => setView("products")}>
+          Products
+        </Button>
+        <Button variant={view === "users" ? "contained" : "outlined"} onClick={() => setView("users")}>
+          Users
+        </Button>
+        <Button variant={view === "orders" ? "contained" : "outlined"} onClick={() => setView("orders")}>
+          Orders
+        </Button>
+      </Box>
+      {renderTable()}
+    </Box>
   );
 }
+
+Dashboard.propTypes = {
+  productsData: PropTypes.array.isRequired,
+  usersData: PropTypes.array.isRequired,
+  ordersData: PropTypes.array.isRequired,
+};

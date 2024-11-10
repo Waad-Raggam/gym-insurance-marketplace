@@ -84,7 +84,7 @@ function App() {
               isAuthenticated={isAuthenticatedUser}
               isAdmin={isAdmin}
               requiresAdmin={true}
-              element={<Dashboard response={response} />}
+              element={<Dashboard productsData={response} />}
             />
           ),
         },
