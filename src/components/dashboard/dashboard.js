@@ -75,7 +75,7 @@ export default function Dashboard(props) {
   
   const usersUrl = "http://localhost:5125/api/v1/User/";
 
-  const [view, setView] = useState("users");
+  const [view, setView] = useState("products");
   // const [userData, setUserData] = useState(null);
   const [allUsersData, setAllUsersData] = useState(null);
   const [isUserDataLoading, setIsUserDataLoading] = useState(true);
@@ -267,12 +267,23 @@ export default function Dashboard(props) {
       <Typography variant="h4" gutterBottom>
         Dashboard
       </Typography>
-      <Button onClick={() => setView("products")}>Products</Button>
-      <Button onClick={() => setView("users")}>Users</Button>
-      {view === "users" && renderUsersTable()}
+      <Button
+        onClick={() => setView("products")}
+        variant={view === "products" ? "contained" : "outlined"}
+      >
+        Products
+      </Button>
+      <Button
+        onClick={() => setView("users")}
+        variant={view === "users" ? "contained" : "outlined"}
+      >
+        Users
+      </Button>
       {view === "products" && renderProductsTable()}
+      {view === "users" && renderUsersTable()}
     </Box>
   );
+  
 }
 
 Dashboard.propTypes = {
