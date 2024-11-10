@@ -14,14 +14,17 @@ import Dashboard from "./components/dashboard/dashboard";
 function App() {
   const [response, setResponse] = useState("");
   const [userData, setUserData] = useState(null);
+  const [allUsersData, setAllUsersData] = useState(null);
   const [isUserDataLoading, setIsUserDataLoading] = useState(true);
 
   const productUrl = "http://localhost:5125/api/v1/InsurancePlan/";
   const profileUrl = "http://localhost:5125/api/v1/User/Profile/";
+  const usersUrl = "http://localhost:5125/api/v1/User/";
 
   useEffect(() => {
     getDataFromServer();
     getUserData();
+    getAllUsersData();
   }, []);
 
   function getDataFromServer() {
@@ -49,6 +52,24 @@ function App() {
       });
   }
 
+  function getAllUsersData() {
+    setIsUserDataLoading(true);
+    const token = localStorage.getItem("token");
+    if (!token) return setIsUserDataLoading(false);
+  
+    axios
+      .get(usersUrl, { headers: { Authorization: `Bearer ${token}` } })
+      .then((response) => {
+        console.log("response from users data:", response.data);
+        setAllUsersData(response.data);
+        setIsUserDataLoading(false);
+      })
+      .catch((error) => {
+        setIsUserDataLoading(false);
+        console.log("Error fetching users:", error);
+      });
+  }
+  
   const isAuthenticatedUser = Boolean(
     userData && localStorage.getItem("token")
   );
@@ -84,7 +105,7 @@ function App() {
               isAuthenticated={isAuthenticatedUser}
               isAdmin={isAdmin}
               requiresAdmin={true}
-              element={<Dashboard productsData={response} />}
+              element={<Dashboard productsData={response} usersData = {allUsersData} />}
             />
           ),
         },

@@ -70,8 +70,9 @@ Row.propTypes = {
 
 export default function Dashboard(props) {
 //   const { productsData, usersData, ordersData } = props;
-  const { productsData } = props;
-  const [view, setView] = useState("products");
+  const { productsData, usersData } = props;
+  const [view, setView] = useState("users");
+  console.log("Received Users Data in Dashboard:", usersData);
 
   const renderTable = () => {
     switch (view) {
@@ -109,14 +110,14 @@ export default function Dashboard(props) {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {/* {usersData.map((user) => (
+                {usersData.map((user) => (
                   <TableRow key={user.userId}>
                     <TableCell>{user.userId}</TableCell>
-                    <TableCell>{user.username}</TableCell>
+                    <TableCell>{user.name}</TableCell>
                     <TableCell>{user.email}</TableCell>
                     <TableCell>{user.role}</TableCell>
                   </TableRow>
-                ))} */}
+                ))}
               </TableBody>
             </Table>
           </TableContainer>
@@ -175,5 +176,5 @@ export default function Dashboard(props) {
 Dashboard.propTypes = {
   productsData: PropTypes.array.isRequired,
   usersData: PropTypes.array.isRequired,
-  ordersData: PropTypes.array.isRequired,
+//   ordersData: PropTypes.array.isRequired,
 };
