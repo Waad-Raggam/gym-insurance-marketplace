@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import Box from "@mui/material/Box";
 import Collapse from "@mui/material/Collapse";
@@ -14,6 +14,7 @@ import Typography from "@mui/material/Typography";
 import Paper from "@mui/material/Paper";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
+import axios from "axios";
 
 function Row(props) {
   const { plan } = props;
@@ -70,13 +71,51 @@ Row.propTypes = {
 
 export default function Dashboard(props) {
   //   const { productsData, usersData, ordersData } = props;
-  const { productsData, usersData, onDeleteUser } = props;
+  const { productsData } = props;
+  
+  const usersUrl = "http://localhost:5125/api/v1/User/";
+
   const [view, setView] = useState("users");
+  // const [userData, setUserData] = useState(null);
+  const [allUsersData, setAllUsersData] = useState(null);
+  const [isUserDataLoading, setIsUserDataLoading] = useState(true);
   const [newUser, setNewUser] = useState({ name: "", email: "", role: "" });
   const [editingUser, setEditingUser] = useState(null);
-  console.log("Received Users Data in Dashboard:", usersData);
+  console.log("Received Users Data in Dashboard:", allUsersData);
 
-  const handleDeleteUser = (userId) => onDeleteUser(userId);
+  useEffect(() => {
+    getAllUsersData();
+  }, []);
+  // const handleDeleteUser = (userId) => onDeleteUser(userId);
+  function getAllUsersData() {
+    setIsUserDataLoading(true);
+    const token = localStorage.getItem("token");
+    if (!token) return setIsUserDataLoading(false);
+  
+    axios
+      .get(usersUrl, { headers: { Authorization: `Bearer ${token}` } })
+      .then((response) => {
+        console.log("response from users data:", response.data);
+        setAllUsersData(response.data);
+        setIsUserDataLoading(false);
+      })
+      .catch((error) => {
+        setIsUserDataLoading(false);
+        console.log("Error fetching users:", error);
+      });
+  }
+
+  const handleDeleteUser = (userId) => {
+    const token = localStorage.getItem("token");
+    axios
+      .delete(`${usersUrl}${userId}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      .then(() => {
+        setAllUsersData(allUsersData.filter(user => user.userId !== userId));
+      })
+      .catch((error) => console.log("Error deleting user:", error));
+  };
   const renderUsersTable = () => (
     <>
       <TableContainer component={Paper}>
@@ -91,43 +130,37 @@ export default function Dashboard(props) {
             </TableRow>
           </TableHead>
           <TableBody>
-            {usersData.map((user) => (
-              <TableRow key={user.userId}>
-                <TableCell>{user.userId}</TableCell>
-                <TableCell>{user.name}</TableCell>
-                <TableCell>{user.email}</TableCell>
-                <TableCell>{user.role}</TableCell>
-                <TableCell>
-                  <Button onClick={() => setEditingUser(user)}>Edit</Button>
-                  <Button
-                    color="error"
-                    onClick={() => handleDeleteUser(user.userId)}
-                  >
-                    Delete
-                  </Button>
+            {allUsersData && allUsersData.length > 0 ? (
+              allUsersData.map((user) => (
+                <TableRow key={user.userId}>
+                  <TableCell>{user.userId}</TableCell>
+                  <TableCell>{user.name}</TableCell>
+                  <TableCell>{user.email}</TableCell>
+                  <TableCell>{user.role}</TableCell>
+                  <TableCell>
+                    <Button onClick={() => setEditingUser(user)}>Edit</Button>
+                    <Button
+                      color="error"
+                      onClick={() => handleDeleteUser(user.userId)}
+                    >
+                      Delete
+                    </Button>
+                  </TableCell>
+                </TableRow>
+              ))
+            ) : (
+              <TableRow>
+                <TableCell colSpan={5} align="center">
+                  No users available
                 </TableCell>
               </TableRow>
-            ))}
+            )}
           </TableBody>
         </Table>
       </TableContainer>
-      {/* {editingUser ? (
-        <Box mt={2}>
-          <Typography>Edit User</Typography>
-          <TextField label="Name" value={editingUser.name} onChange={(e) => setEditingUser({ ...editingUser, name: e.target.value })} />
-          <TextField label="Email" value={editingUser.email} onChange={(e) => setEditingUser({ ...editingUser, email: e.target.value })} />
-          <Button>Save</Button>
-        </Box>
-      ) : (
-        <Box mt={2}>
-          <Typography>Add New User</Typography>
-          <TextField label="Name" value={newUser.name} onChange={(e) => setNewUser({ ...newUser, name: e.target.value })} />
-          <TextField label="Email" value={newUser.email} onChange={(e) => setNewUser({ ...newUser, email: e.target.value })} />
-          <Button>Add</Button>
-        </Box>
-      )} */}
     </>
   );
+  
   const renderProductsTable = () => (
     <>
       <TableContainer component={Paper}>
@@ -187,7 +220,7 @@ export default function Dashboard(props) {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {usersData.map((user) => (
+                {allUsersData.map((user) => (
                   <TableRow key={user.userId}>
                     <TableCell>{user.userId}</TableCell>
                     <TableCell>{user.name}</TableCell>
@@ -244,6 +277,6 @@ export default function Dashboard(props) {
 
 Dashboard.propTypes = {
   productsData: PropTypes.array.isRequired,
-  usersData: PropTypes.array.isRequired,
+  // usersData: PropTypes.array.isRequired,
   //   ordersData: PropTypes.array.isRequired,
 };
