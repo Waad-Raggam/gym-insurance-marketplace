@@ -1,12 +1,14 @@
-import { TextField, Button } from "@mui/material";
-import React from "react";
+import { TextField, Button,  InputAdornment, IconButton, Input } from "@mui/material";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import Visibility from "@mui/icons-material/Visibility";
+import VisibilityOff from "@mui/icons-material/VisibilityOff";
 
-// Add a new validation field for role in the schema
+
 const schema = yup
   .object({
     name: yup.string().required("Name is required"),
@@ -23,12 +25,17 @@ const schema = yup
         /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
         "Password must have one uppercase, one lowercase, one number, and one special character"
       ),
-    role: yup.string().required("Role is required"), // Add role validation
+    role: yup.string().required("Role is required"), 
   })
   .required();
 
 export default function UserRegistration() {
   const navigate = useNavigate();
+  const [showPassword, setShowPassword] = useState(false);
+
+  const handleClickShowPassword = () => setShowPassword((show) => !show);
+  const handleMouseDownPassword = (event) => event.preventDefault();
+
 
   const {
     register,
@@ -93,15 +100,30 @@ export default function UserRegistration() {
         />
 
         {/* Password Field */}
-        <TextField
-          id="password"
-          label="Password"
-          variant="standard"
-          type="password"
-          {...register("password")}
-          error={!!errors.password}
-          helperText={errors.password?.message}
-        />
+        <Input
+            type={showPassword ? "text" : "password"}
+            {...register("password")}
+            error={!!errors.password}
+            endAdornment={
+              <InputAdornment position="end">
+                <IconButton onClick={handleClickShowPassword} onMouseDown={handleMouseDownPassword}>
+                  {showPassword ? <VisibilityOff /> : <Visibility />}
+                </IconButton>
+              </InputAdornment>
+            }
+          />
+        {/* <Input
+            type={showPassword ? "text" : "password"}
+            {...register("password")}
+            error={!!errors.password}
+            endAdornment={
+              <InputAdornment position="end">
+                <IconButton onClick={handleClickShowPassword} onMouseDown={handleMouseDownPassword}>
+                  {showPassword ? <VisibilityOff /> : <Visibility />}
+                </IconButton>
+              </InputAdornment>
+            }
+          /> */}
         <TextField
           id="role"
           label="Role"
