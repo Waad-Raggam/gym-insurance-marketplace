@@ -3,14 +3,18 @@ import { AppBar, Toolbar, Typography, Button, Box } from "@mui/material";
 import { Link, useNavigate } from "react-router-dom";
 import SearchInsurancePlans from "../search/SearchInsurancePlans";
 
-export default function Navbar({ isAuthenticated, userData }) {
+export default function Navbar({ isAuthenticated, userData, setIsAuthenticated }) {
   const navigate = useNavigate();
 
   const handleLogout = () => {
     console.log("Logged in user token before sign out:", localStorage.getItem("token"));
     localStorage.removeItem("token");
+    localStorage.removeItem("isAuthenticated"); 
     console.log("Logged in user token after sign out:", localStorage.getItem("token"));
-    navigate("/login");
+
+    setIsAuthenticated(false); 
+
+    navigate("/login"); 
   };
 
   return (
@@ -32,7 +36,7 @@ export default function Navbar({ isAuthenticated, userData }) {
           <Button color="inherit" component={Link} to="#contact">
             Contact
           </Button>
-          {isAuthenticated && userData?.role === "Admin" ? (
+          {isAuthenticated ? (
             <Button component={Link} to="/profile" color="warning" variant="contained">
               Profile
             </Button>

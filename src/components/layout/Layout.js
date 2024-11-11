@@ -3,12 +3,12 @@ import Navbar from "../navbar/NavBar";
 import Footer from "../footer/Footer";
 
 export default function Layout(props) {
-    const { isAuthenticated, userData} = props;
+    const { isAuthenticated, userData, setIsAuthenticated} = props;
     return(
         <div>
             <Navbar
             isAuthenticated = {isAuthenticated}
-            userData = {userData}
+            userData = {userData} setIsAuthenticated={setIsAuthenticated} 
             />
             <Outlet/>
             <Footer/>
