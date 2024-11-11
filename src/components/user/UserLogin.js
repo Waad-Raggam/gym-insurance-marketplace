@@ -6,55 +6,82 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { jwtDecode } from "jwt-decode";
 import * as yup from "yup";
 import {
-  AppBar, Toolbar, Typography, Button, Box,
-  TextField, Input, InputLabel, FormControl, InputAdornment, IconButton
+  TextField,
+  FormControl,
+  Input,
+  InputLabel,
+  InputAdornment,
+  IconButton,
+  Button,
 } from "@mui/material";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 
-const schema = yup.object({
-  email: yup.string().email("Invalid email format").required("Email is required"),
-  password: yup
-    .string()
-    .required("Password is required")
-    .min(8, "Password must be at least 8 characters")
-    .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/, "Password must have one uppercase, one lowercase, one number, and one special character"),
-}).required();
+const schema = yup
+  .object({
+    email: yup
+      .string()
+      .email("Invalid email format")
+      .required("Email is required"),
+    password: yup
+      .string()
+      .required("Password is required")
+      .min(8, "Password must be at least 8 characters")
+      .matches(
+        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
+        "Password must have one uppercase, one lowercase, one number, and one special character"
+      ),
+  })
+  .required();
 
 export default function UserLogin() {
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
-  const { register, handleSubmit, formState: { errors } } = useForm({ resolver: yupResolver(schema) });
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({ resolver: yupResolver(schema) });
 
   const handleClickShowPassword = () => setShowPassword((show) => !show);
   const handleMouseDownPassword = (event) => event.preventDefault();
 
   const onSubmit = (data) => {
-    axios.post("http://localhost:5125/api/v1/User/LogIn", data)
+    axios
+      .post("http://localhost:5125/api/v1/User/LogIn", data)
       .then((response) => {
         const token = response.data;
         localStorage.setItem("token", token);
-        
+
         const decodedToken = jwtDecode(token);
         console.log("User logged in:", decodedToken);
-  
+
         localStorage.setItem("isAuthenticated", true);
         localStorage.setItem("isAdmin", decodedToken.role === "Admin");
-  
-        navigate("/profile");
+
+        if (decodedToken.role === "Admin") {
+          navigate("/dashboard");
+        } else {
+          navigate("/profile");
+        }
+        window.location.reload();
       })
       .catch((error) => {
         console.log(error);
         alert("Login failed. Please check your credentials.");
       });
   };
-  
 
   return (
     <div>
       <h1>User Login</h1>
       <form onSubmit={handleSubmit(onSubmit)}>
-        <TextField label="Email" {...register("email")} error={!!errors.email} helperText={errors.email?.message} />
+        <TextField
+          label="Email"
+          {...register("email")}
+          error={!!errors.email}
+          helperText={errors.email?.message}
+        />
         <FormControl variant="standard">
           <InputLabel>Password</InputLabel>
           <Input
@@ -63,7 +90,10 @@ export default function UserLogin() {
             error={!!errors.password}
             endAdornment={
               <InputAdornment position="end">
-                <IconButton onClick={handleClickShowPassword} onMouseDown={handleMouseDownPassword}>
+                <IconButton
+                  onClick={handleClickShowPassword}
+                  onMouseDown={handleMouseDownPassword}
+                >
                   {showPassword ? <VisibilityOff /> : <Visibility />}
                 </IconButton>
               </InputAdornment>
