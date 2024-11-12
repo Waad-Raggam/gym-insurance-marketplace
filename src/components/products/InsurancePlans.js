@@ -1,14 +1,47 @@
-import React from "react";
+import React, { useState } from "react";
 import { Card, CardContent, CardActionArea, Typography } from "@mui/material";
-import "./InsurancePlans.css";
 import Button from "@mui/material/Button";
 import { Link } from "react-router-dom";
+import "./InsurancePlans.css";
 
 export default function InsurancePlans(props) {
-  const { response } = props;
+  const { response, userGyms } = props;
+  const [selectedGym, setSelectedGym] = useState(null);
+
+  const handleGymSelect = (gymId) => {
+    setSelectedGym(gymId === selectedGym ? null : gymId);
+  };
 
   return (
     <div className="plans-grid">
+      <h1>Your Gyms</h1>
+      <div className="gyms-row">
+        {Array.isArray(userGyms) && userGyms.length > 0 ? (
+          userGyms.map((gym) => (
+            <Card
+              key={gym.gymId}
+              className={`gym-card ${selectedGym === gym.gymId ? "selected" : ""}`}
+              onClick={() => handleGymSelect(gym.gymId)}
+              sx={{
+                margin: "10px",
+                cursor: "pointer",
+                border: selectedGym === gym.gymId ? "2px solid #1976d2" : "1px solid #ccc",
+              }}
+            >
+              <CardActionArea>
+                <CardContent>
+                  <Typography variant="h6">{gym.gymName}</Typography>
+                  <Typography variant="body2">{gym.gymLocation}</Typography>
+                </CardContent>
+              </CardActionArea>
+            </Card>
+          ))
+        ) : (
+          <Typography variant="body2" sx={{ color: "#E8EBF7" }}>
+            No gyms available.
+          </Typography>
+        )}
+      </div>
       <h1>Insurance Plans</h1>
       {Array.isArray(response) && response.length > 0 ? (
         response.map((plan) => (

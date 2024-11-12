@@ -113,7 +113,7 @@ function App() {
         },
         {
           path: "plans",
-          element: <InsurancePlans response={response} />
+          element: <InsurancePlans response={response} userGyms = {gyms}/>
         },
         // ...(isAdmin
         //   ? [
