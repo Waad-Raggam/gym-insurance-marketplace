@@ -19,6 +19,8 @@ function App() {
   const [userData, setUserData] = useState(null);
   const [isUserDataLoading, setIsUserDataLoading] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [gyms, setGyms] = useState([]);
+  const [isGymsLoading, setIsGymsLoading] = useState(true);
 
 
   const productUrl = "http://localhost:5125/api/v1/InsurancePlan/";
@@ -59,6 +61,32 @@ function App() {
       });
   }
 
+  useEffect(() => {
+    const fetchUserGyms = async () => {
+      if (userData?.userId && userData.role === "Customer") {
+        setIsGymsLoading(true);
+        const token = localStorage.getItem("token");
+        const gymsUrl = `http://localhost:5125/api/v1/Gym/user/${userData.userId}`;
+
+        try {
+          const gymsResponse = await axios.get(gymsUrl, {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+          console.log("api :", gymsUrl);
+          console.log("User gyms :", gymsResponse.data);
+          setGyms(gymsResponse.data);
+        } catch (error) {
+          console.error("Error fetching gyms:", error);
+        } finally {
+          setIsGymsLoading(false);
+        }
+      }
+    };
+
+    fetchUserGyms();
+  }, [userData]);
+
+
   const isAuthenticatedUser = Boolean(userData && localStorage.getItem("token"));
   const isAdmin = userData?.role === "Admin";
 
@@ -79,7 +107,7 @@ function App() {
             <ProtectedRoute
               isUserDataLoading={isUserDataLoading}
               isAuthenticated={isAuthenticatedUser}
-              element={<UserProfile userData={userData} />}
+              element={<UserProfile userData={userData} userGyms = {gyms}/>}
             />
           ),
         },

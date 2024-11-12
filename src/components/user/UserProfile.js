@@ -1,42 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { Typography, Box, TextField, List, ListItem, ListItemText, Alert } from "@mui/material";
-import axios from "axios";
 
 export default function UserProfile(props) {
-  const { userData } = props;
-  const usersGymUrl = `http://localhost:5125/api/v1/Gym/user/${userData.userId}`;
-  const [gyms, setGyms] = useState([]);
-  const [isGymsLoading, setIsGymsLoading] = useState(true);
-
-  useEffect(() => {
-    if (userData) {
-      fetchUserGyms();
-    }
-  }, [userData]);
-
-  function fetchUserGyms() {
-    setIsGymsLoading(true);
-    const token = localStorage.getItem("token");
-    if (!token) {
-      setIsGymsLoading(false);
-      return;
-    }
-
-    axios
-      .get(usersGymUrl, { headers: { Authorization: `Bearer ${token}` } })
-      .then((response) => {
-        console.log("user gyms "+response.data);
-        setGyms(response.data);
-        setIsGymsLoading(false);
-      })
-      .catch((error) => {
-        console.log("Error fetching gyms:", error);
-        setIsGymsLoading(false);
-      });
-  }
+  const { userData, userGyms } = props;
 
   if (!userData) return <div>Loading user data...</div>;
-  if (isGymsLoading) return <div>Loading gyms...</div>;
+  if (!userGyms) return <div>Loading gyms...</div>;
 
   return (
     <Box sx={{ padding: 2 }}>
@@ -52,9 +21,9 @@ export default function UserProfile(props) {
       </Box>
 
       <Typography variant="h5" gutterBottom sx={{ marginTop: 4 }}>Your Gyms</Typography>
-      {gyms.length > 0 ? (
+      {userGyms.length > 0 ? (
         <List>
-          {gyms.map((gym) => (
+          {userGyms.map((gym) => (
             <ListItem key={gym.gymId} sx={{ borderBottom: '1px solid #ddd', paddingBottom: 1 }}>
               <ListItemText
                 primary={gym.gymName}
