@@ -9,8 +9,10 @@ import {
   Typography,
   Box,
 } from "@mui/material";
+import axios from "axios";
 
-export default function GymForm() {
+export default function GymForm(props) {
+  const { userData } = props;
   const [formData, setFormData] = useState({
     gymName: "",
     location: "",
@@ -50,25 +52,40 @@ export default function GymForm() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const userId = userData?.userId;
+    if (!userId) {
+      alert("User ID not found. Please log in.");
+      return;
+    }
+
+    const formDataWithUserId = { ...formData, userId };
+    console.log("Submitting form data:", formDataWithUserId);
+
     try {
-      const response = await fetch("http://localhost:5125/api/v1/Gym/", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
-      });
+      const response = await axios.post(
+        "http://localhost:5125/api/v1/Gym/",
+        formDataWithUserId,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
 
-      if (!response.ok) {
-        throw new Error("Failed to submit form");
-      }
-
-      const data = await response.json();
       setResponseMessage("Form submitted successfully");
-      console.log("Response:", data);
+      console.log("Response:", response.data);
     } catch (error) {
       setResponseMessage("Error submitting form");
       console.error("Error:", error);
+
+      if (error.response && error.response.status === 400) {
+        const { errors } = error.response.data;
+        if (errors.Name) alert(errors.Name[0]);
+        if (errors.Email) alert(errors.Email[0]);
+        if (errors.Password) alert(errors.Password[0]);
+        if (errors.PhoneNumber) alert(errors.PhoneNumber[0]);
+      }
     }
   };
 

@@ -103,7 +103,7 @@ function App() {
               },
               {
                 path: "/gymForm",
-                element: <GymForm />
+                element: <GymForm userData={userData} />
               },
               {
                 path: "/cart",
