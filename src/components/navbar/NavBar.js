@@ -32,6 +32,7 @@ export default function Navbar({ isAuthenticated, userData }) {
           <Button color="inherit" component={Link} to="#contact">
             Contact
           </Button>
+          <Link to="/cart">Cart</Link>
           {isAuthenticated && userData?.role === "Admin" ? (
             <Button component={Link} to="/profile" color="warning" variant="contained">
               Profile
