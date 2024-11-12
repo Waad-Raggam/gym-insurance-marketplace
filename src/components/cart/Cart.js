@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { getCart, removeFromCart, clearCart } from "../../utils/cart/Cart";
 import { Card, CardContent, Typography, Button } from "@mui/material";
 import { Link, useNavigate } from "react-router-dom";
+import axios from "axios";
 
 export default function Cart() {
   const navigate = useNavigate();
@@ -24,9 +25,39 @@ export default function Cart() {
   };
 
   const handleCheckout = () => {
-    clearCart();
-    setCartItems([]);
-    navigate("/orders")
+    const orderData = {
+      gymId: "d88f8ab9-8fb7-4bc9-852a-643204a310b0",
+      insuranceId: 2,
+      startDate: "2024-11-02T06:46:25.075Z",
+      endDate: "2024-11-02T06:46:25.075Z",
+      premiumAmount: 0,
+      isActive: true,
+    };
+
+    const orderUrl = "http://localhost:5125/api/v1/GymInsurance";
+    axios
+      .post(orderUrl, orderData, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      })
+      .then((response) => {
+        console.log(response.data, "Order created successfully!");
+        clearCart();
+        setCartItems([]);
+        navigate("/orders");
+      })
+      .catch((error) => {
+        console.error("Error creating order:", error);
+
+        if (error.response && error.response.status === 400) {
+          const { errors } = error.response.data;
+          if (errors.Name) alert(errors.Name[0]);
+          if (errors.Email) alert(errors.Email[0]);
+          if (errors.Password) alert(errors.Password[0]);
+          if (errors.PhoneNumber) alert(errors.PhoneNumber[0]);
+        }
+      });
   };
 
   const handleClearCart = () => {
@@ -63,13 +94,13 @@ export default function Cart() {
         Clear Cart
       </Button>
       <Button
-            variant="contained"
-            color="primary"
-            sx={{ marginLeft: "16px" }}
-            onClick={handleCheckout}
-          >
-            Complete Checkout
-          </Button>
+        variant="contained"
+        color="primary"
+        sx={{ marginLeft: "16px" }}
+        onClick={handleCheckout}
+      >
+        Complete Checkout
+      </Button>
     </div>
   );
 }
