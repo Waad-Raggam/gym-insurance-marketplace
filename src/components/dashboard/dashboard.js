@@ -15,7 +15,7 @@ import Paper from "@mui/material/Paper";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import axios from "axios";
-import CircularProgress from "@mui/material/CircularProgress"; 
+import CircularProgress from "@mui/material/CircularProgress";
 function Row(props) {
   const { plan } = props;
   const [open, setOpen] = useState(false);
@@ -69,16 +69,62 @@ Row.propTypes = {
   }).isRequired,
 };
 
+function OrderRow(props) {
+  const { order } = props;
+  const [open, setOpen] = useState(false);
+
+  return (
+    <>
+      <TableRow sx={{ "& > *": { borderBottom: "unset" } }}>
+        <TableCell>
+          <IconButton
+            aria-label="expand row"
+            size="small"
+            onClick={() => setOpen(!open)}
+          >
+            {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
+          </IconButton>
+        </TableCell>
+        <TableCell component="th" scope="row">
+          {order.giId}
+        </TableCell>
+        <TableCell>{order.gymId}</TableCell>
+        <TableCell align="right">{order.insuranceId}</TableCell>
+        <TableCell>{new Date(order.startDate).toLocaleDateString()}</TableCell>
+        <TableCell>{new Date(order.endDate).toLocaleDateString()}</TableCell>
+        <TableCell align="right">${order.premiumAmount}</TableCell>
+        <TableCell>{order.isActive ? "Active" : "Inactive"}</TableCell>
+      </TableRow>
+    </>
+  );
+}
+
+OrderRow.propTypes = {
+  order: PropTypes.shape({
+    giId: PropTypes.string.isRequired,
+    gymId: PropTypes.string.isRequired,
+    insuranceId: PropTypes.number.isRequired,
+    startDate: PropTypes.string.isRequired,
+    endDate: PropTypes.string.isRequired,
+    premiumAmount: PropTypes.number.isRequired,
+    isActive: PropTypes.bool.isRequired,
+  }).isRequired,
+};
+
 export default function Dashboard(props) {
   const { productsData } = props;
   const usersUrl = "http://localhost:5125/api/v1/User/";
+  const ordersUrl = "http://localhost:5125/api/v1/GymInsurance";
 
   const [view, setView] = useState("products");
   const [allUsersData, setAllUsersData] = useState(null);
   const [isUserDataLoading, setIsUserDataLoading] = useState(true);
+  const [ordersData, setOrdersData] = useState([]);
+  const [isOrderDataLoading, setIsOrderDataLoading] = useState(true);
 
   useEffect(() => {
     getAllUsersData();
+    fetchOrdersData();
   }, []);
 
   function getAllUsersData() {
@@ -95,6 +141,23 @@ export default function Dashboard(props) {
       .catch((error) => {
         setIsUserDataLoading(false);
         console.log("Error fetching users:", error);
+      });
+  }
+
+  function fetchOrdersData() {
+    setIsOrderDataLoading(true);
+    const token = localStorage.getItem("token");
+    if (!token) return setIsOrderDataLoading(false);
+
+    axios
+      .get(ordersUrl, { headers: { Authorization: `Bearer ${token}` } })
+      .then((response) => {
+        setOrdersData(response.data);
+        setIsOrderDataLoading(false);
+      })
+      .catch((error) => {
+        setIsOrderDataLoading(false);
+        console.log("Error fetching orders:", error);
       });
   }
 
@@ -153,12 +216,38 @@ export default function Dashboard(props) {
     </TableContainer>
   );
 
+  const renderOrdersTable = () => (
+    <TableContainer component={Paper}>
+      <Table aria-label="collapsible table">
+        <TableHead>
+          <TableRow>
+            <TableCell />
+            <TableCell>Order ID</TableCell>
+            <TableCell>Gym ID</TableCell>
+            <TableCell align="right">Insurance ID</TableCell>
+            <TableCell>Start Date</TableCell>
+            <TableCell>End Date</TableCell>
+            <TableCell align="right">Premium Amount</TableCell>
+            <TableCell>Status</TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {ordersData.map((order) => (
+            <OrderRow key={order.giId} order={order} />
+          ))}
+        </TableBody>
+      </Table>
+    </TableContainer>
+  );
+
   const renderTable = () => {
     switch (view) {
       case "products":
         return renderProductsTable();
       case "users":
         return renderUsersTable();
+      case "orders":
+        return renderOrdersTable();
       default:
         return null;
     }
@@ -180,6 +269,12 @@ export default function Dashboard(props) {
         variant={view === "users" ? "contained" : "outlined"}
       >
         Users
+      </Button>
+      <Button
+        onClick={() => setView("orders")}
+        variant={view === "orders" ? "contained" : "outlined"}
+      >
+        Orders
       </Button>
 
       {isUserDataLoading ? (
