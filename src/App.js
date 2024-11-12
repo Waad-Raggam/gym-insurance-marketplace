@@ -11,6 +11,7 @@ import UserLogin from "./components/user/UserLogin";
 import UserProfile from "./components/user/UserProfile";
 import Dashboard from "./components/dashboard/Dashboard";
 import Cart from "./components/cart/Cart";
+import Orders from "./components/orders/Orders";
 
 function App() {
   const [response, setResponse] = useState("");
@@ -101,6 +102,10 @@ function App() {
               {
                 path: "/cart",
                 element: <Cart />
+              },
+              {
+                path: "/orders",
+                element: <Orders />
               },
             ]
           // : []),
