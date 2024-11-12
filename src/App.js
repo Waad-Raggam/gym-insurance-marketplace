@@ -9,9 +9,10 @@ import IndividualPlan from "./components/products/IndividualPlan";
 import UserRegistration from "./components/user/UserRegistration";
 import UserLogin from "./components/user/UserLogin";
 import UserProfile from "./components/user/UserProfile";
-import Dashboard from "./components/dashboard/Dashboard";
+import Dashboard from "./components/dashboard/dashboard";
 import Cart from "./components/cart/Cart";
 import Orders from "./components/orders/Orders";
+import GymForm from "./components/form/GymForm";
 
 function App() {
   const [response, setResponse] = useState("");
@@ -48,6 +49,7 @@ function App() {
       .get(profileUrl, { headers: { Authorization: `Bearer ${token}` } })
       .then((response) => {
         console.log("User logged in:", response.data);
+        console.log("Token :", token);
         setUserData(response.data);
         setIsUserDataLoading(false);
       })
@@ -98,6 +100,10 @@ function App() {
                     element={<Dashboard productsData={response} />}
                   />
                 ),
+              },
+              {
+                path: "/gymForm",
+                element: <GymForm />
               },
               {
                 path: "/cart",
