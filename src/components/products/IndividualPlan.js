@@ -7,7 +7,7 @@ import CardContent from "@mui/material/CardContent";
 import Typography from "@mui/material/Typography";
 import Chip from "@mui/material/Chip";
 import LoadingAndErrorState from "../states/LoadingAndErrorState";
-import { addToCart, getCart, removeFromCart, clearCart } from "../../utils/cart/Cart"; // Import the addToCart function
+import { addToCart, getCart, removeFromCart, clearCart } from "../../utils/cart/Cart"; 
 import "./IndividualPlan.css";
 
 export default function IndividualPlan() {
@@ -35,7 +35,6 @@ export default function IndividualPlan() {
     getData();
   }, [url]);
 
-  // Handle Add to Cart
   const handleAddToCart = () => {
     addToCart(product);
     alert(`${product.planName} added to cart`);

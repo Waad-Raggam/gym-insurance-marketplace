@@ -9,8 +9,8 @@ export default function Cart() {
     setCartItems(getCart());
   }, []);
 
-  const handleRemove = (productId) => {
-    removeFromCart(productId);
+  const handleRemove = (index) => {
+    removeFromCart(index);
     setCartItems(getCart());
   };
 
@@ -25,8 +25,8 @@ export default function Cart() {
       {cartItems.length === 0 ? (
         <p>Your cart is empty</p>
       ) : (
-        cartItems.map((item) => (
-          <Card key={item.id} sx={{ maxWidth: 345, margin: "16px" }}>
+        cartItems.map((item, index) => (
+          <Card key={index} sx={{ maxWidth: 345, margin: "16px" }}>
             <CardContent>
               <Typography variant="h6">{item.planName}</Typography>
               <Typography variant="body2" color="text.secondary">
@@ -35,7 +35,7 @@ export default function Cart() {
               <Button
                 variant="contained"
                 color="secondary"
-                onClick={() => handleRemove(item.id)}
+                onClick={() => handleRemove(index)}
               >
                 Remove
               </Button>
