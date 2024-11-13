@@ -13,6 +13,7 @@ import Dashboard from "./components/dashboard/dashboard";
 import Cart from "./components/cart/Cart";
 import Orders from "./components/orders/Orders";
 import GymForm from "./components/form/GymForm";
+import InsurancePlanForm from "./components/form/InsurancePlanForm";
 
 function App() {
   const [response, setResponse] = useState("");
@@ -145,6 +146,10 @@ function App() {
         {
           path: "/gymForm",
           element: <GymForm userData={userData} />,
+        },
+        {
+          path: "/plansForm",
+          element: <InsurancePlanForm userData={userData} />,
         },
         {
           path: "/cart",

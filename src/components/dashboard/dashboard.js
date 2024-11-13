@@ -16,6 +16,8 @@ import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import axios from "axios";
 import CircularProgress from "@mui/material/CircularProgress";
+import { useNavigate } from "react-router-dom";
+
 function Row(props) {
   const { plan } = props;
   const [open, setOpen] = useState(false);
@@ -136,6 +138,7 @@ export default function Dashboard(props) {
   const { productsData, gyms } = props;
   const usersUrl = "http://localhost:5125/api/v1/User/";
   const ordersUrl = "http://localhost:5125/api/v1/GymInsurance";
+  const navigate = useNavigate();
 
   const [view, setView] = useState("products");
   const [allUsersData, setAllUsersData] = useState(null);
@@ -289,6 +292,20 @@ export default function Dashboard(props) {
       <Typography variant="h4" gutterBottom>
         Dashboard
       </Typography>
+      <Button
+          variant="contained"
+          color="primary"
+          size="large"
+          onClick={() => navigate("/plansForm")}
+          sx={{
+            borderRadius: "20px",
+            padding: "10px 20px",
+            textTransform: "none",
+            fontWeight: "bold",
+          }}
+        >
+          Add New Plan
+        </Button>
       <Button
         onClick={() => setView("products")}
         variant={view === "products" ? "contained" : "outlined"}
