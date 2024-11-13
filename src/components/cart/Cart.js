@@ -4,7 +4,8 @@ import { Card, CardContent, Typography, Button } from "@mui/material";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 
-export default function Cart() {
+export default function Cart(props) {
+  const {userData} = props;
   const navigate = useNavigate();
   const [cartItems, setCartItems] = useState([]);
 
@@ -27,6 +28,7 @@ export default function Cart() {
     storedCart.forEach((item) => {
       console.log("item gym " + item.gymId);
       console.log("item plan " + item.planId);
+      console.log("userid " + userData.userId);
       
       item.gymId.forEach((gymId) => {
         if (!gymInsuranceMap[gymId]) {
@@ -40,6 +42,7 @@ export default function Cart() {
       const insuranceIds = gymInsuranceMap[gymId];
       const orderData = {
         gymId: gymId,
+        userId: userData.userId,
         insuranceIds: insuranceIds,
         startDate: "2024-11-02T06:46:25.075Z",
         endDate: "2024-11-02T06:46:25.075Z",

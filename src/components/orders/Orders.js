@@ -85,17 +85,25 @@ OrderRow.propTypes = {
 
 
 export default function OrdersTable(props) {
-  const { gyms } = props;
-  const ordersUrl = "http://localhost:5125/api/v1/GymInsurance";
-  const [ordersData, setOrdersData] = useState([]);
+  const { userData, gyms } = props;
+  const ordersUrl = `http://localhost:5125/api/v1/GymInsurance/user/${userData?.userId}`;
+const [ordersData, setOrdersData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    fetchOrdersData();
-  }, []);
+    if (userData) {
+      fetchOrdersData();
+    }
+  }, [userData]);
+  
 
   function fetchOrdersData() {
     setIsLoading(true);
+    const userId = userData?.userId;
+    if (!userId) {
+      alert("User ID not found. Please log in.");
+      return;
+    }
     const token = localStorage.getItem("token");
     if (!token) return setIsLoading(false);
 

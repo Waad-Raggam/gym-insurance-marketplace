@@ -139,11 +139,11 @@ function App() {
         },
         {
           path: "/cart",
-          element: <Cart />,
+          element: <Cart userData={userData}/>,
         },
         {
           path: "/orders",
-          element: <Orders gyms={gyms} />,
+          element: <Orders userData = {userData} gyms={gyms} />,
         },
       ],
       // : []),
