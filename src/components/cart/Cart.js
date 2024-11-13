@@ -1,17 +1,80 @@
 import React, { useEffect, useState } from "react";
 import { getCart, removeFromCart, clearCart } from "../../utils/cart/Cart";
 import { Card, CardContent, Typography, Button } from "@mui/material";
+import { Link, useNavigate } from "react-router-dom";
+import axios from "axios";
 
-export default function Cart() {
+export default function Cart(props) {
+  const {userData} = props;
+  const navigate = useNavigate();
   const [cartItems, setCartItems] = useState([]);
 
   useEffect(() => {
-    setCartItems(getCart());
+    const storedCart = JSON.parse(localStorage.getItem("cart")) || [];
+    setCartItems(storedCart);
+    console.log(storedCart);  
   }, []);
 
   const handleRemove = (index) => {
     removeFromCart(index);
     setCartItems(getCart());
+  };
+
+  const handleCheckout = () => {
+    const storedCart = JSON.parse(localStorage.getItem("cart")) || []; 
+    
+    const gymInsuranceMap = {}; 
+    
+    storedCart.forEach((item) => {
+      console.log("item gym " + item.gymId);
+      console.log("item plan " + item.planId);
+      console.log("userid " + userData.userId);
+      
+      item.gymId.forEach((gymId) => {
+        if (!gymInsuranceMap[gymId]) {
+          gymInsuranceMap[gymId] = []; 
+        }
+        gymInsuranceMap[gymId].push(item.planId); 
+      });
+    });
+
+    for (const gymId in gymInsuranceMap) {
+      const insuranceIds = gymInsuranceMap[gymId];
+      const orderData = {
+        gymId: gymId,
+        userId: userData.userId,
+        insuranceIds: insuranceIds,
+        startDate: "2024-11-02T06:46:25.075Z",
+        endDate: "2024-11-02T06:46:25.075Z",
+        premiumAmount: 0,
+        isActive: true,
+      };
+  
+      const orderUrl = "http://localhost:5125/api/v1/GymInsurance";
+      axios
+        .post(orderUrl, orderData, {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        })
+        .then((response) => {
+          console.log(response.data, "Order created successfully!");
+          clearCart();
+          setCartItems([]); 
+          navigate("/orders");
+        })
+        .catch((error) => {
+          console.error("Error creating order:", error);
+  
+          if (error.response && error.response.status === 400) {
+            const { errors } = error.response.data;
+            if (errors.Name) alert(errors.Name[0]);
+            if (errors.Email) alert(errors.Email[0]);
+            if (errors.Password) alert(errors.Password[0]);
+            if (errors.PhoneNumber) alert(errors.PhoneNumber[0]);
+          }
+        });
+    }
   };
 
   const handleClearCart = () => {
@@ -32,6 +95,18 @@ export default function Cart() {
               <Typography variant="body2" color="text.secondary">
                 {item.coverageType}
               </Typography>
+              <Typography variant="body2">
+                Coverage Details:
+                <ul>
+                  {Array.isArray(item.gymId) ? (
+                    item.gymId.map((gymId, index) => (
+                      <li key={index}>{gymId}</li>
+                    ))
+                  ) : (
+                    <li>No gym ID available</li>
+                  )}
+                </ul>
+              </Typography>
               <Button
                 variant="contained"
                 color="secondary"
@@ -45,6 +120,14 @@ export default function Cart() {
       )}
       <Button variant="contained" color="primary" onClick={handleClearCart}>
         Clear Cart
+      </Button>
+      <Button
+        variant="contained"
+        color="primary"
+        sx={{ marginLeft: "16px" }}
+        onClick={handleCheckout}
+      >
+        Complete Checkout
       </Button>
     </div>
   );
