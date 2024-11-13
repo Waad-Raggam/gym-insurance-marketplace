@@ -9,32 +9,44 @@ import IndividualPlan from "./components/products/IndividualPlan";
 import UserRegistration from "./components/user/UserRegistration";
 import UserLogin from "./components/user/UserLogin";
 import UserProfile from "./components/user/UserProfile";
-import Dashboard from "./components/dashboard/Dashboard";
+import Dashboard from "./components/dashboard/dashboard";
 import Cart from "./components/cart/Cart";
+import Orders from "./components/orders/Orders";
+import GymForm from "./components/form/GymForm";
 
 function App() {
   const [response, setResponse] = useState("");
   const [userData, setUserData] = useState(null);
   const [isUserDataLoading, setIsUserDataLoading] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-
+  const [gyms, setGyms] = useState([]);
+  const [isGymsLoading, setIsGymsLoading] = useState(true);
 
   const productUrl = "http://localhost:5125/api/v1/InsurancePlan/";
   const profileUrl = "http://localhost:5125/api/v1/User/Profile/";
+  const gymsUrl = "http://localhost:5125/api/v1/Gym/";
 
   useEffect(() => {
     getDataFromServer();
     getUserData();
     const token = localStorage.getItem("token");
     if (token) {
-      setIsAuthenticated(true); 
+      setIsAuthenticated(true);
     }
+    getGymsData();
   }, []);
 
   function getDataFromServer() {
     axios
       .get(productUrl)
       .then((response) => setResponse(response.data))
+      .catch((error) => console.log("Error: ", error));
+  }
+
+  function getGymsData() {
+    axios
+      .get(gymsUrl)
+      .then((response) => setGyms(response.data))
       .catch((error) => console.log("Error: ", error));
   }
 
@@ -47,6 +59,7 @@ function App() {
       .get(profileUrl, { headers: { Authorization: `Bearer ${token}` } })
       .then((response) => {
         console.log("User logged in:", response.data);
+        console.log("Token :", token);
         setUserData(response.data);
         setIsUserDataLoading(false);
       })
@@ -56,14 +69,45 @@ function App() {
       });
   }
 
-  const isAuthenticatedUser = Boolean(userData && localStorage.getItem("token"));
+  useEffect(() => {
+    const fetchUserGyms = async () => {
+      if (userData?.userId && userData.role === "Customer") {
+        setIsGymsLoading(true);
+        const token = localStorage.getItem("token");
+        const gymsUrl = `http://localhost:5125/api/v1/Gym/user/${userData.userId}`;
+
+        try {
+          const gymsResponse = await axios.get(gymsUrl, {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+          console.log("api :", gymsUrl);
+          console.log("User gyms :", gymsResponse.data);
+          setGyms(gymsResponse.data);
+        } catch (error) {
+          console.error("Error fetching gyms:", error);
+        } finally {
+          setIsGymsLoading(false);
+        }
+      }
+    };
+
+    fetchUserGyms();
+  }, [userData]);
+
+  const isAuthenticatedUser = Boolean(
+    userData && localStorage.getItem("token")
+  );
   const isAdmin = userData?.role === "Admin";
 
   const router = createBrowserRouter([
     {
       path: "/",
       element: (
-        <Layout isAuthenticated={isAuthenticatedUser} userData={userData} setIsAuthenticated = {setIsAuthenticated}/>
+        <Layout
+          isAuthenticated={isAuthenticatedUser}
+          userData={userData}
+          setIsAuthenticated={setIsAuthenticated}
+        />
       ),
       children: [
         { index: true, element: <Home /> },
@@ -76,39 +120,45 @@ function App() {
             <ProtectedRoute
               isUserDataLoading={isUserDataLoading}
               isAuthenticated={isAuthenticatedUser}
-              element={<UserProfile userData={userData} />}
+              element={<UserProfile userData={userData} userGyms={gyms} />}
             />
           ),
         },
         {
           path: "plans",
-          element: <InsurancePlans response={response} />
+          element: <InsurancePlans response={response} userGyms={gyms} />,
         },
         // ...(isAdmin
         //   ? [
-              {
-                path: "dashboard",
-                element: (
-                  <ProtectedRoute
-                    isUserDataLoading={isUserDataLoading}
-                    isAuthenticated={isAuthenticatedUser}
-                    isAdmin={isAdmin}
-                    requiresAdmin={true}
-                    element={<Dashboard productsData={response} />}
-                  />
-                ),
-              },
-              {
-                path: "/cart",
-                element: <Cart />
-              },
-            ]
-          // : []),
+        {
+          path: "dashboard",
+          element: (
+            <ProtectedRoute
+              isUserDataLoading={isUserDataLoading}
+              isAuthenticated={isAuthenticatedUser}
+              isAdmin={isAdmin}
+              requiresAdmin={true}
+              element={<Dashboard productsData={response} gyms={gyms} />}
+            />
+          ),
+        },
+        {
+          path: "/gymForm",
+          element: <GymForm userData={userData} />,
+        },
+        {
+          path: "/cart",
+          element: <Cart userData={userData}/>,
+        },
+        {
+          path: "/orders",
+          element: <Orders userData = {userData} gyms={gyms} />,
+        },
+      ],
+      // : []),
       // ],
     },
   ]);
-  
-  
 
   return <RouterProvider router={router} />;
 }
