@@ -6,10 +6,18 @@ import "./InsurancePlans.css";
 
 export default function InsurancePlans(props) {
   const { response, userGyms } = props;
-  const [selectedGym, setSelectedGym] = useState(null);
+  const [selectedGyms, setSelectedGyms] = useState([]);
 
   const handleGymSelect = (gymId) => {
-    setSelectedGym(gymId === selectedGym ? null : gymId);
+    setSelectedGyms((prevSelectedGyms) => {
+      const updatedSelectedGyms = prevSelectedGyms.includes(gymId)
+        ? prevSelectedGyms.filter((id) => id !== gymId) 
+        : [...prevSelectedGyms, gymId];
+
+      console.log("Selected gyms:", updatedSelectedGyms);
+
+      return updatedSelectedGyms;
+    });
   };
 
   return (
@@ -20,12 +28,12 @@ export default function InsurancePlans(props) {
           userGyms.map((gym) => (
             <Card
               key={gym.gymId}
-              className={`gym-card ${selectedGym === gym.gymId ? "selected" : ""}`}
-              onClick={() => handleGymSelect(gym.gymId)}
+              className={`gym-card ${selectedGyms.includes(gym.gymId) ? "selected" : ""}`} 
+              onClick={() => handleGymSelect(gym.gymId)} 
               sx={{
                 margin: "10px",
                 cursor: "pointer",
-                border: selectedGym === gym.gymId ? "2px solid #1976d2" : "1px solid #ccc",
+                border: selectedGyms.includes(gym.gymId) ? "2px solid #1976d2" : "1px solid #ccc", 
               }}
             >
               <CardActionArea>
@@ -42,26 +50,19 @@ export default function InsurancePlans(props) {
           </Typography>
         )}
       </div>
+
       <h1>Insurance Plans</h1>
       {Array.isArray(response) && response.length > 0 ? (
         response.map((plan) => (
-          <Card
-            key={plan.insuranceId}
-            className="card"
-            sx={{ margin: "20px auto" }}
-          >
+          <Card key={plan.insuranceId} className="card" sx={{ margin: "20px auto" }}>
             <CardActionArea>
               <CardContent>
                 <Typography variant="h5" gutterBottom>
                   {plan.planName}
                 </Typography>
-                <Typography variant="body2">
-                  Monthly Premium: ${plan.monthlyPremium}
-                </Typography>
+                <Typography variant="body2">Monthly Premium: ${plan.monthlyPremium}</Typography>
                 <Typography variant="body2">{plan.planDescription}</Typography>
-                <Typography variant="body2">
-                  Coverage Type: {plan.coverageType}
-                </Typography>
+                <Typography variant="body2">Coverage Type: {plan.coverageType}</Typography>
                 <Typography variant="body2">
                   Coverage Details:
                   <ul>
@@ -71,7 +72,7 @@ export default function InsurancePlans(props) {
                   </ul>
                 </Typography>
               </CardContent>
-              <Link to={`${plan.insuranceId}`}>
+              <Link to={`${plan.insuranceId}?gymId=${selectedGyms.join(',')}`}>
                 <Button variant="outlined">View plan</Button>
               </Link>
             </CardActionArea>
