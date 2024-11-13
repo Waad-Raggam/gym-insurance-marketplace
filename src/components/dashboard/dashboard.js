@@ -17,9 +17,11 @@ import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import axios from "axios";
 import CircularProgress from "@mui/material/CircularProgress";
 import { useNavigate } from "react-router-dom";
+import DeleteIcon from "@mui/icons-material/Delete";
+
 
 function Row(props) {
-  const { plan } = props;
+  const { plan, onDelete } = props;
   const [open, setOpen] = useState(false);
 
   return (
@@ -40,9 +42,18 @@ function Row(props) {
         <TableCell>{plan.coverageType}</TableCell>
         <TableCell align="right">${plan.monthlyPremium}</TableCell>
         <TableCell>{plan.planDescription}</TableCell>
+        <TableCell align="center">
+          <IconButton
+            aria-label="delete"
+            color="error"
+            onClick={() => onDelete(plan.insuranceId)}
+          >
+            <DeleteIcon />
+          </IconButton>
+        </TableCell>
       </TableRow>
       <TableRow>
-        <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={5}>
+        <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
           <Collapse in={open} timeout="auto" unmountOnExit>
             <Box sx={{ margin: 1 }}>
               <Typography variant="h6" gutterBottom component="div">
@@ -68,7 +79,9 @@ Row.propTypes = {
     monthlyPremium: PropTypes.number.isRequired,
     planDescription: PropTypes.string.isRequired,
     coverageDetails: PropTypes.arrayOf(PropTypes.string).isRequired,
+    insuranceId: PropTypes.number.isRequired, // Assuming insuranceId is a number
   }).isRequired,
+  onDelete: PropTypes.func.isRequired,
 };
 
 function OrderRow(props) {
@@ -138,6 +151,7 @@ export default function Dashboard(props) {
   const { productsData, gyms } = props;
   const usersUrl = "http://localhost:5125/api/v1/User/";
   const ordersUrl = "http://localhost:5125/api/v1/GymInsurance";
+  const plansUrl = "http://localhost:5125/api/v1/InsurancePlan/";
   const navigate = useNavigate();
 
   const [view, setView] = useState("products");
@@ -186,6 +200,22 @@ export default function Dashboard(props) {
       });
   }
 
+  function handleDeleteProduct(insuranceId) {
+    if (window.confirm("Are you sure you want to delete this plan?")) {
+      axios
+        .delete(`${plansUrl}${insuranceId}`)
+        .then(() => {
+          setOrdersData((prevData) =>
+            prevData.filter((plan) => plan.insuranceId !== insuranceId)
+          );
+        })
+        .catch((error) => {
+          console.log("url "+`${plansUrl}${insuranceId}`);
+          console.error("Error deleting product:", error);
+        });
+    }
+  }
+
   const renderUsersTable = () => (
     <TableContainer component={Paper}>
       <Table aria-label="users table">
@@ -230,11 +260,16 @@ export default function Dashboard(props) {
             <TableCell>Coverage Type</TableCell>
             <TableCell align="right">Monthly Premium</TableCell>
             <TableCell>Description</TableCell>
+            <TableCell align="center">Actions</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
           {productsData.map((plan) => (
-            <Row key={plan.insuranceId} plan={plan} />
+            <Row
+              key={plan.insuranceId}
+              plan={plan}
+              onDelete={handleDeleteProduct}
+            />
           ))}
         </TableBody>
       </Table>
