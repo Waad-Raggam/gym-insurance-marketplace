@@ -11,7 +11,7 @@ export default function Cart() {
   useEffect(() => {
     const storedCart = JSON.parse(localStorage.getItem("cart")) || [];
     setCartItems(storedCart);
-    console.log(storedCart);
+    console.log(storedCart);  
   }, []);
 
   const handleRemove = (index) => {
@@ -20,51 +20,58 @@ export default function Cart() {
   };
 
   const handleCheckout = () => {
-    const storedCart = JSON.parse(localStorage.getItem("cart")) || [];
-
+    const storedCart = JSON.parse(localStorage.getItem("cart")) || []; 
+    
+    const gymInsuranceMap = {}; 
+    
     storedCart.forEach((item) => {
-      const gymIds = Array.isArray(item.gymId) ? item.gymId : [item.gymId];
-      const insuranceId = item.planId;
-
-      gymIds.forEach((gymId) => {
-        const orderData = {
-          gymId: gymId,
-          insuranceId: insuranceId,
-          startDate: "2024-11-02T06:46:25.075Z",
-          endDate: "2024-11-02T06:46:25.075Z",
-          premiumAmount: 0,
-          isActive: true,
-        };
-
-        console.log("Order Data: ", orderData);
-
-        const orderUrl = "http://localhost:5125/api/v1/GymInsurance";
-        axios
-          .post(orderUrl, orderData, {
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem("token")}`,
-            },
-          })
-          .then((response) => {
-            console.log(response.data, "Order created successfully!");
-            clearCart();
-            setCartItems([]);
-            navigate("/orders");
-          })
-          .catch((error) => {
-            console.error("Error creating order:", error);
-
-            if (error.response && error.response.status === 400) {
-              console.log("API Error Response:", error.response.data);
-              const { errors } = error.response.data;
-              if (errors.Name) alert(errors.Name[0]);
-              if (errors.Email) alert(errors.Email[0]);
-              if (errors.Password) alert(errors.Password[0]);
-              if (errors.PhoneNumber) alert(errors.PhoneNumber[0]);
-            }
-          });
+      console.log("item gym " + item.gymId);
+      console.log("item plan " + item.planId);
+      
+      item.gymId.forEach((gymId) => {
+        if (!gymInsuranceMap[gymId]) {
+          gymInsuranceMap[gymId] = []; 
+        }
+        gymInsuranceMap[gymId].push(item.planId); 
       });
     });
+
+    for (const gymId in gymInsuranceMap) {
+      const insuranceIds = gymInsuranceMap[gymId];
+      const orderData = {
+        gymId: gymId,
+        insuranceIds: insuranceIds,
+        startDate: "2024-11-02T06:46:25.075Z",
+        endDate: "2024-11-02T06:46:25.075Z",
+        premiumAmount: 0,
+        isActive: true,
+      };
+  
+      const orderUrl = "http://localhost:5125/api/v1/GymInsurance";
+      axios
+        .post(orderUrl, orderData, {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        })
+        .then((response) => {
+          console.log(response.data, "Order created successfully!");
+          clearCart();
+          setCartItems([]); 
+          navigate("/orders");
+        })
+        .catch((error) => {
+          console.error("Error creating order:", error);
+  
+          if (error.response && error.response.status === 400) {
+            const { errors } = error.response.data;
+            if (errors.Name) alert(errors.Name[0]);
+            if (errors.Email) alert(errors.Email[0]);
+            if (errors.Password) alert(errors.Password[0]);
+            if (errors.PhoneNumber) alert(errors.PhoneNumber[0]);
+          }
+        });
+    }
   };
 
   const handleClearCart = () => {

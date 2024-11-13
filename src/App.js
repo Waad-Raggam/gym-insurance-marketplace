@@ -22,7 +22,6 @@ function App() {
   const [gyms, setGyms] = useState([]);
   const [isGymsLoading, setIsGymsLoading] = useState(true);
 
-
   const productUrl = "http://localhost:5125/api/v1/InsurancePlan/";
   const profileUrl = "http://localhost:5125/api/v1/User/Profile/";
 
@@ -31,7 +30,7 @@ function App() {
     getUserData();
     const token = localStorage.getItem("token");
     if (token) {
-      setIsAuthenticated(true); 
+      setIsAuthenticated(true);
     }
   }, []);
 
@@ -86,15 +85,20 @@ function App() {
     fetchUserGyms();
   }, [userData]);
 
-
-  const isAuthenticatedUser = Boolean(userData && localStorage.getItem("token"));
+  const isAuthenticatedUser = Boolean(
+    userData && localStorage.getItem("token")
+  );
   const isAdmin = userData?.role === "Admin";
 
   const router = createBrowserRouter([
     {
       path: "/",
       element: (
-        <Layout isAuthenticated={isAuthenticatedUser} userData={userData} setIsAuthenticated = {setIsAuthenticated}/>
+        <Layout
+          isAuthenticated={isAuthenticatedUser}
+          userData={userData}
+          setIsAuthenticated={setIsAuthenticated}
+        />
       ),
       children: [
         { index: true, element: <Home /> },
@@ -107,47 +111,45 @@ function App() {
             <ProtectedRoute
               isUserDataLoading={isUserDataLoading}
               isAuthenticated={isAuthenticatedUser}
-              element={<UserProfile userData={userData} userGyms = {gyms}/>}
+              element={<UserProfile userData={userData} userGyms={gyms} />}
             />
           ),
         },
         {
           path: "plans",
-          element: <InsurancePlans response={response} userGyms = {gyms}/>
+          element: <InsurancePlans response={response} userGyms={gyms} />,
         },
         // ...(isAdmin
         //   ? [
-              {
-                path: "dashboard",
-                element: (
-                  <ProtectedRoute
-                    isUserDataLoading={isUserDataLoading}
-                    isAuthenticated={isAuthenticatedUser}
-                    isAdmin={isAdmin}
-                    requiresAdmin={true}
-                    element={<Dashboard productsData={response} />}
-                  />
-                ),
-              },
-              {
-                path: "/gymForm",
-                element: <GymForm userData={userData} />
-              },
-              {
-                path: "/cart",
-                element: <Cart />
-              },
-              {
-                path: "/orders",
-                element: <Orders />
-              },
-            ]
-          // : []),
+        {
+          path: "dashboard",
+          element: (
+            <ProtectedRoute
+              isUserDataLoading={isUserDataLoading}
+              isAuthenticated={isAuthenticatedUser}
+              isAdmin={isAdmin}
+              requiresAdmin={true}
+              element={<Dashboard productsData={response} />}
+            />
+          ),
+        },
+        {
+          path: "/gymForm",
+          element: <GymForm userData={userData} />,
+        },
+        {
+          path: "/cart",
+          element: <Cart />,
+        },
+        {
+          path: "/orders",
+          element: <Orders gyms={gyms} />,
+        },
+      ],
+      // : []),
       // ],
     },
   ]);
-  
-  
 
   return <RouterProvider router={router} />;
 }
