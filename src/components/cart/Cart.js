@@ -8,16 +8,11 @@ export default function Cart() {
   const navigate = useNavigate();
   const [cartItems, setCartItems] = useState([]);
 
-  // const [totalAmount, setTotalAmount] = useState(0);
-
   useEffect(() => {
-    setCartItems(getCart());
+    const storedCart = JSON.parse(localStorage.getItem("cart")) || [];
+    setCartItems(storedCart);
+    console.log(storedCart);
   }, []);
-
-  // const calculateTotal = (items) => {
-  //   const total = items.reduce((acc, item) => acc + item.price, 0);
-  //   setTotalAmount(total);
-  // };
 
   const handleRemove = (index) => {
     removeFromCart(index);
@@ -25,39 +20,51 @@ export default function Cart() {
   };
 
   const handleCheckout = () => {
-    const orderData = {
-      gymId: "d88f8ab9-8fb7-4bc9-852a-643204a310b0",
-      insuranceId: 2,
-      startDate: "2024-11-02T06:46:25.075Z",
-      endDate: "2024-11-02T06:46:25.075Z",
-      premiumAmount: 0,
-      isActive: true,
-    };
+    const storedCart = JSON.parse(localStorage.getItem("cart")) || [];
 
-    const orderUrl = "http://localhost:5125/api/v1/GymInsurance";
-    axios
-      .post(orderUrl, orderData, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      })
-      .then((response) => {
-        console.log(response.data, "Order created successfully!");
-        clearCart();
-        setCartItems([]);
-        navigate("/orders");
-      })
-      .catch((error) => {
-        console.error("Error creating order:", error);
+    storedCart.forEach((item) => {
+      const gymIds = Array.isArray(item.gymId) ? item.gymId : [item.gymId];
+      const insuranceId = item.planId;
 
-        if (error.response && error.response.status === 400) {
-          const { errors } = error.response.data;
-          if (errors.Name) alert(errors.Name[0]);
-          if (errors.Email) alert(errors.Email[0]);
-          if (errors.Password) alert(errors.Password[0]);
-          if (errors.PhoneNumber) alert(errors.PhoneNumber[0]);
-        }
+      gymIds.forEach((gymId) => {
+        const orderData = {
+          gymId: gymId,
+          insuranceId: insuranceId,
+          startDate: "2024-11-02T06:46:25.075Z",
+          endDate: "2024-11-02T06:46:25.075Z",
+          premiumAmount: 0,
+          isActive: true,
+        };
+
+        console.log("Order Data: ", orderData);
+
+        const orderUrl = "http://localhost:5125/api/v1/GymInsurance";
+        axios
+          .post(orderUrl, orderData, {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+          })
+          .then((response) => {
+            console.log(response.data, "Order created successfully!");
+            clearCart();
+            setCartItems([]);
+            navigate("/orders");
+          })
+          .catch((error) => {
+            console.error("Error creating order:", error);
+
+            if (error.response && error.response.status === 400) {
+              console.log("API Error Response:", error.response.data);
+              const { errors } = error.response.data;
+              if (errors.Name) alert(errors.Name[0]);
+              if (errors.Email) alert(errors.Email[0]);
+              if (errors.Password) alert(errors.Password[0]);
+              if (errors.PhoneNumber) alert(errors.PhoneNumber[0]);
+            }
+          });
       });
+    });
   };
 
   const handleClearCart = () => {
@@ -78,6 +85,18 @@ export default function Cart() {
               <Typography variant="body2" color="text.secondary">
                 {item.coverageType}
               </Typography>
+              <Typography variant="body2">
+                Coverage Details:
+                <ul>
+                  {Array.isArray(item.gymId) ? (
+                    item.gymId.map((gymId, index) => (
+                      <li key={index}>{gymId}</li>
+                    ))
+                  ) : (
+                    <li>No gym ID available</li>
+                  )}
+                </ul>
+              </Typography>
               <Button
                 variant="contained"
                 color="secondary"
@@ -89,7 +108,6 @@ export default function Cart() {
           </Card>
         ))
       )}
-      {/* <Typography variant="h6">Total: ${totalAmount}</Typography> */}
       <Button variant="contained" color="primary" onClick={handleClearCart}>
         Clear Cart
       </Button>
