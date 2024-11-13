@@ -16,6 +16,58 @@ import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import axios from "axios";
 import CircularProgress from "@mui/material/CircularProgress";
+function Row(props) {
+  const { plan } = props;
+  const [open, setOpen] = useState(false);
+
+  return (
+    <>
+      <TableRow sx={{ "& > *": { borderBottom: "unset" } }}>
+        <TableCell>
+          <IconButton
+            aria-label="expand row"
+            size="small"
+            onClick={() => setOpen(!open)}
+          >
+            {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
+          </IconButton>
+        </TableCell>
+        <TableCell component="th" scope="row">
+          {plan.planName}
+        </TableCell>
+        <TableCell>{plan.coverageType}</TableCell>
+        <TableCell align="right">${plan.monthlyPremium}</TableCell>
+        <TableCell>{plan.planDescription}</TableCell>
+      </TableRow>
+      <TableRow>
+        <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={5}>
+          <Collapse in={open} timeout="auto" unmountOnExit>
+            <Box sx={{ margin: 1 }}>
+              <Typography variant="h6" gutterBottom component="div">
+                Coverage Details
+              </Typography>
+              <ul style={{ paddingLeft: "20px", margin: 0 }}>
+                {plan.coverageDetails.map((detail, index) => (
+                  <li key={index}>{detail}</li>
+                ))}
+              </ul>
+            </Box>
+          </Collapse>
+        </TableCell>
+      </TableRow>
+    </>
+  );
+}
+
+Row.propTypes = {
+  plan: PropTypes.shape({
+    planName: PropTypes.string.isRequired,
+    coverageType: PropTypes.string.isRequired,
+    monthlyPremium: PropTypes.number.isRequired,
+    planDescription: PropTypes.string.isRequired,
+    coverageDetails: PropTypes.arrayOf(PropTypes.string).isRequired,
+  }).isRequired,
+};
 
 function OrderRow(props) {
   const { order, gymName } = props;
@@ -36,25 +88,26 @@ function OrderRow(props) {
         <TableCell component="th" scope="row">
           {order.giId}
         </TableCell>
-        <TableCell component="th" scope="row">
-          {order.userId}
-        </TableCell>
+        <TableCell>{order.userId}</TableCell>
         <TableCell>{gymName}</TableCell>
-        <TableCell>{order.startDate}</TableCell>
-        <TableCell>{order.endDate}</TableCell>
+        <TableCell align="right">
+          {order.insuranceIds.join(", ")}
+        </TableCell>
+        <TableCell>{new Date(order.startDate).toLocaleDateString()}</TableCell>
+        <TableCell>{new Date(order.endDate).toLocaleDateString()}</TableCell>
         <TableCell align="right">${order.premiumAmount}</TableCell>
         <TableCell>{order.isActive ? "Active" : "Inactive"}</TableCell>
       </TableRow>
       <TableRow>
-        <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={8}>
+        <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={9}>
           <Collapse in={open} timeout="auto" unmountOnExit>
             <Box sx={{ margin: 1 }}>
               <Typography variant="h6" gutterBottom component="div">
                 Insurance IDs
               </Typography>
-              <ul>
-                {order.insuranceIds.map((id) => (
-                  <li key={id}>{id}</li>
+              <ul style={{ paddingLeft: "20px", margin: 0 }}>
+                {order.insuranceIds.map((id, index) => (
+                  <li key={index}>{id}</li>
                 ))}
               </ul>
             </Box>
@@ -120,6 +173,7 @@ export default function Dashboard(props) {
     axios
       .get(ordersUrl, { headers: { Authorization: `Bearer ${token}` } })
       .then((response) => {
+        console.log(response.data);
         setOrdersData(response.data);
         setIsOrderDataLoading(false);
       })
@@ -129,10 +183,60 @@ export default function Dashboard(props) {
       });
   }
 
-  const getGymNameById = (gymId) => {
-    const gym = gyms.find((g) => g.gymId === gymId);
-    return gym ? gym.gymName : "NA";
-  };
+  const renderUsersTable = () => (
+    <TableContainer component={Paper}>
+      <Table aria-label="users table">
+        <TableHead>
+          <TableRow>
+            <TableCell>User ID</TableCell>
+            <TableCell>Username</TableCell>
+            <TableCell>Email</TableCell>
+            <TableCell>Role</TableCell>
+            <TableCell>Actions</TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {allUsersData && allUsersData.length > 0 ? (
+            allUsersData.map((user) => (
+              <TableRow key={user.userId}>
+                <TableCell>{user.userId}</TableCell>
+                <TableCell>{user.name}</TableCell>
+                <TableCell>{user.email}</TableCell>
+                <TableCell>{user.role}</TableCell>
+              </TableRow>
+            ))
+          ) : (
+            <TableRow>
+              <TableCell colSpan={5} align="center">
+                No users available
+              </TableCell>
+            </TableRow>
+          )}
+        </TableBody>
+      </Table>
+    </TableContainer>
+  );
+
+  const renderProductsTable = () => (
+    <TableContainer component={Paper}>
+      <Table aria-label="collapsible table">
+        <TableHead>
+          <TableRow>
+            <TableCell />
+            <TableCell>Plan Name</TableCell>
+            <TableCell>Coverage Type</TableCell>
+            <TableCell align="right">Monthly Premium</TableCell>
+            <TableCell>Description</TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {productsData.map((plan) => (
+            <Row key={plan.insuranceId} plan={plan} />
+          ))}
+        </TableBody>
+      </Table>
+    </TableContainer>
+  );
 
   const renderOrdersTable = () => (
     <TableContainer component={Paper}>
@@ -143,6 +247,7 @@ export default function Dashboard(props) {
             <TableCell>Order ID</TableCell>
             <TableCell>User ID</TableCell>
             <TableCell>Gym Name</TableCell>
+            <TableCell align="right">Insurance ID</TableCell>
             <TableCell>Start Date</TableCell>
             <TableCell>End Date</TableCell>
             <TableCell align="right">Premium Amount</TableCell>
@@ -151,12 +256,33 @@ export default function Dashboard(props) {
         </TableHead>
         <TableBody>
           {ordersData.map((order) => (
-            <OrderRow key={order.giId} order={order} gymName={getGymNameById(order.gymId)} />
+            <OrderRow key={order.giId} order={order} gymName={getGymNameById(order.gymId)}  />
           ))}
         </TableBody>
       </Table>
     </TableContainer>
   );
+
+  const renderTable = () => {
+    switch (view) {
+      case "products":
+        return renderProductsTable();
+      case "users":
+        return renderUsersTable();
+      case "orders":
+        return renderOrdersTable();
+      default:
+        return null;
+    }
+  };
+
+  const getGymNameById = (gymId) => {
+    console.log("Looking for gym with ID:", gymId, "Type:", typeof gymId);
+    const gym = gyms.find((g) => g.gymId === gymId); 
+    console.log("Found gym:", gym); 
+    return gym ? gym.gymName : "NA"; 
+  };
+  
 
   return (
     <Box>
@@ -182,12 +308,12 @@ export default function Dashboard(props) {
         Orders
       </Button>
 
-      {isUserDataLoading || isOrderDataLoading ? (
+      {isUserDataLoading ? (
         <Box sx={{ display: "flex", justifyContent: "center", marginTop: 3 }}>
           <CircularProgress />
         </Box>
       ) : (
-        view === "orders" ? renderOrdersTable() : null
+        renderTable()
       )}
     </Box>
   );
@@ -195,5 +321,4 @@ export default function Dashboard(props) {
 
 Dashboard.propTypes = {
   productsData: PropTypes.array.isRequired,
-  gyms: PropTypes.array.isRequired,
 };
