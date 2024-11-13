@@ -24,6 +24,7 @@ function App() {
 
   const productUrl = "http://localhost:5125/api/v1/InsurancePlan/";
   const profileUrl = "http://localhost:5125/api/v1/User/Profile/";
+  const gymsUrl = "http://localhost:5125/api/v1/Gym/";
 
   useEffect(() => {
     getDataFromServer();
@@ -32,12 +33,20 @@ function App() {
     if (token) {
       setIsAuthenticated(true);
     }
+    getGymsData();
   }, []);
 
   function getDataFromServer() {
     axios
       .get(productUrl)
       .then((response) => setResponse(response.data))
+      .catch((error) => console.log("Error: ", error));
+  }
+
+  function getGymsData() {
+    axios
+      .get(gymsUrl)
+      .then((response) => setGyms(response.data))
       .catch((error) => console.log("Error: ", error));
   }
 
@@ -129,7 +138,7 @@ function App() {
               isAuthenticated={isAuthenticatedUser}
               isAdmin={isAdmin}
               requiresAdmin={true}
-              element={<Dashboard productsData={response} />}
+              element={<Dashboard productsData={response} gyms={gyms} />}
             />
           ),
         },
