@@ -40,7 +40,7 @@ export default function Navbar({
             gap: 20,
             justifyContent: "center",
             alignItems: "center",
-            width: "80%",
+            width: "70%",
           }}
         >
           <SearchInsurancePlans />
