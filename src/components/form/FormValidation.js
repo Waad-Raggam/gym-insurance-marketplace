@@ -28,16 +28,17 @@ export default function FormValidation() {
   const onSubmit = (data) => console.log(data);
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
-      <label>Email</label>
-      <input {...register("email")} />
-      <p>{errors.email?.message}</p>
+    <></>
+    // <form onSubmit={handleSubmit(onSubmit)}>
+    //   <label>Email</label>
+    //   <input {...register("email")} />
+    //   <p>{errors.email?.message}</p>
 
-      <label>Password</label>
-      <input {...register("password")} />
-      <p>{errors.password?.message}</p>
+    //   <label>Password</label>
+    //   <input {...register("password")} />
+    //   <p>{errors.password?.message}</p>
 
-      <input type="submit" />
-    </form>
+    //   <input type="submit" />
+    // </form>
   );
 }

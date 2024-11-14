@@ -27,7 +27,7 @@ function Row(props) {
   return (
     <>
       <TableRow sx={{ "& > *": { borderBottom: "unset" } }}>
-        <TableCell>
+        <TableCell sx={{ color: "black" }}>
           <IconButton
             aria-label="expand row"
             size="small"
@@ -36,12 +36,14 @@ function Row(props) {
             {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
           </IconButton>
         </TableCell>
-        <TableCell component="th" scope="row">
+        <TableCell component="th" scope="row" sx={{ color: "black" }}>
           {plan.planName}
         </TableCell>
-        <TableCell>{plan.coverageType}</TableCell>
-        <TableCell align="right">${plan.monthlyPremium}</TableCell>
-        <TableCell>{plan.planDescription}</TableCell>
+        <TableCell sx={{ color: "black" }}>{plan.coverageType}</TableCell>
+        <TableCell align="right" sx={{ color: "black" }}>
+          ${plan.monthlyPremium}
+        </TableCell>
+        <TableCell sx={{ color: "black" }}>{plan.planDescription}</TableCell>
         <TableCell align="center">
           <IconButton
             aria-label="edit"
@@ -60,13 +62,25 @@ function Row(props) {
         </TableCell>
       </TableRow>
       <TableRow>
-        <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
+        <TableCell
+          style={{ paddingBottom: 0, paddingTop: 0 }}
+          colSpan={6}
+          sx={{ color: "black" }}
+        >
           <Collapse in={open} timeout="auto" unmountOnExit>
             <Box sx={{ margin: 1 }}>
-              <Typography variant="h6" gutterBottom component="div">
+              <Typography
+                variant="h6"
+                gutterBottom
+                component="div"
+                sx={{ color: "black" }}
+              >
                 Coverage Details
               </Typography>
-              <ul style={{ paddingLeft: "20px", margin: 0 }}>
+              <ul
+                style={{ paddingLeft: "20px", margin: 0 }}
+                sx={{ color: "black" }}
+              >
                 {plan.coverageDetails.map((detail, index) => (
                   <li key={index}>{detail}</li>
                 ))}
@@ -93,13 +107,13 @@ Row.propTypes = {
 };
 
 function OrderRow(props) {
-  const { order, gymName } = props;
+  const { order, gymName, insuranceData } = props;
   const [open, setOpen] = useState(false);
 
   return (
     <>
       <TableRow sx={{ "& > *": { borderBottom: "unset" } }}>
-        <TableCell>
+        <TableCell sx={{ color: "black" }}>
           <IconButton
             aria-label="expand row"
             size="small"
@@ -108,31 +122,71 @@ function OrderRow(props) {
             {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
           </IconButton>
         </TableCell>
-        <TableCell component="th" scope="row">
+        <TableCell component="th" scope="row" sx={{ color: "black" }}>
           {order.giId}
         </TableCell>
-        <TableCell>{order.userId}</TableCell>
-        <TableCell>{gymName}</TableCell>
-        <TableCell align="right">
+        <TableCell sx={{ color: "black" }}>{order.userId}</TableCell>
+        <TableCell sx={{ color: "black" }}>{gymName}</TableCell>
+        <TableCell align="right" sx={{ color: "black" }}>
           {order.insuranceIds.join(", ")}
         </TableCell>
-        <TableCell>{new Date(order.startDate).toLocaleDateString()}</TableCell>
-        <TableCell>{new Date(order.endDate).toLocaleDateString()}</TableCell>
-        <TableCell align="right">${order.premiumAmount}</TableCell>
-        <TableCell>{order.isActive ? "Active" : "Inactive"}</TableCell>
+        <TableCell sx={{ color: "black" }}>
+          {new Date(order.startDate).toLocaleDateString()}
+        </TableCell>
+        <TableCell sx={{ color: "black" }}>
+          {new Date(order.endDate).toLocaleDateString()}
+        </TableCell>
+        <TableCell align="right" sx={{ color: "black" }}>
+          ${order.premiumAmount}
+        </TableCell>
+        <TableCell sx={{ color: "black" }}>
+          {order.isActive ? "Active" : "Inactive"}
+        </TableCell>
       </TableRow>
       <TableRow>
         <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={9}>
           <Collapse in={open} timeout="auto" unmountOnExit>
             <Box sx={{ margin: 1 }}>
-              <Typography variant="h6" gutterBottom component="div">
-                Insurance IDs
+              <Typography
+                variant="h6"
+                gutterBottom
+                component="div"
+                sx={{ color: "black" }}
+              >
+                Insurance Plans
               </Typography>
-              <ul style={{ paddingLeft: "20px", margin: 0 }}>
+              {/* <ul style={{ paddingLeft: "20px", margin: 0, color: "black" }}>
                 {order.insuranceIds.map((id, index) => (
                   <li key={index}>{id}</li>
                 ))}
-              </ul>
+              </ul> */}
+              <Table size="small" aria-label="insurance-ids">
+                <TableBody>
+                  {order.insuranceIds.map((id, index) => {
+                    const insurance = insuranceData[id]; 
+                    return (
+                      <TableRow key={index}>
+                        <TableCell component="th" scope="row" sx={{ color: "black" }}>
+                          {insurance?.planName || "Unknown"}
+                        </TableCell>
+                        <TableCell sx={{ color: "black" }}>
+                          ${insurance?.monthlyPremium || "N/A"}
+                        </TableCell>
+                        <TableCell sx={{ color: "black" }}>
+                          {insurance?.coverageType || "N/A"}
+                        </TableCell>
+                        <TableCell sx={{ color: "black" }}>
+                          <ul>
+                            {insurance?.coverageDetails?.map((detail, idx) => (
+                              <li key={idx}>{detail}</li>
+                            )) || "N/A"}
+                          </ul>
+                        </TableCell>
+                      </TableRow>
+                    );
+                  })}
+                </TableBody>
+              </Table>  
             </Box>
           </Collapse>
         </TableCell>
@@ -157,9 +211,10 @@ OrderRow.propTypes = {
 
 export default function Dashboard(props) {
   const { productsData, gyms } = props;
-  const usersUrl = "http://localhost:5125/api/v1/User/";
-  const ordersUrl = "http://localhost:5125/api/v1/GymInsurance";
-  const plansUrl = "http://localhost:5125/api/v1/InsurancePlan/";
+  const usersUrl = "https://gym-insurance-marketplace-backend.onrender.com/api/v1/User/";
+  const ordersUrl = "https://gym-insurance-marketplace-backend.onrender.com/api/v1/GymInsurance";
+  const plansUrl = "https://gym-insurance-marketplace-backend.onrender.com/api/v1/InsurancePlan/";
+  const insuranceUrl = `https://gym-insurance-marketplace-backend.onrender.com/api/v1/InsurancePlan`; 
   const navigate = useNavigate();
 
   const [view, setView] = useState("products");
@@ -167,10 +222,12 @@ export default function Dashboard(props) {
   const [isUserDataLoading, setIsUserDataLoading] = useState(true);
   const [ordersData, setOrdersData] = useState([]);
   const [isOrderDataLoading, setIsOrderDataLoading] = useState(true);
+  const [insuranceData, setInsuranceData] = useState({});
 
   useEffect(() => {
     getAllUsersData();
     fetchOrdersData();
+    fetchInsuranceData();
   }, []);
 
   function getAllUsersData() {
@@ -208,6 +265,25 @@ export default function Dashboard(props) {
       });
   }
 
+  function fetchInsuranceData() {
+    const token = localStorage.getItem("token");
+    if (!token) return;
+
+    axios
+      .get(insuranceUrl, { headers: { Authorization: `Bearer ${token}` } })
+      .then((response) => {
+        const insuranceMap = response.data.reduce((acc, insurance) => {
+          acc[insurance.insuranceId] = insurance;
+          return acc;
+        }, {});
+        setInsuranceData(insuranceMap);
+      })
+      .catch((error) => {
+        console.log("Error fetching insurance data:", error);
+      });
+  }
+
+
   function handleDeleteProduct(insuranceId) {
     if (window.confirm("Are you sure you want to delete this plan?")) {
       axios
@@ -218,7 +294,7 @@ export default function Dashboard(props) {
           );
         })
         .catch((error) => {
-          console.log("url "+`${plansUrl}${insuranceId}`);
+          console.log("url " + `${plansUrl}${insuranceId}`);
           console.error("Error deleting product:", error);
         });
     }
@@ -228,26 +304,58 @@ export default function Dashboard(props) {
     navigate(`/editPlan/${insuranceId}`);
   }
 
+  function handleDeleteUser(userId) {
+    if (window.confirm("Are you sure you want to delete user?")) {
+      axios
+        .delete(`${usersUrl}${userId}`)
+        .then(() => {
+          setOrdersData((prevData) =>
+            prevData.filter((user => user.userId !== userId))
+          );
+        })
+        .catch((error) => {
+          console.log("url " + `${usersUrl}${userId}`);
+          console.error("Error deleting user:", error);
+        });
+    }
+  }
+
   const renderUsersTable = () => (
     <TableContainer component={Paper}>
       <Table aria-label="users table">
         <TableHead>
           <TableRow>
-            <TableCell>User ID</TableCell>
-            <TableCell>Username</TableCell>
-            <TableCell>Email</TableCell>
-            <TableCell>Role</TableCell>
-            <TableCell>Actions</TableCell>
+            <TableCell sx={{ color: "black" }}>User ID</TableCell>
+            <TableCell sx={{ color: "black" }}>Username</TableCell>
+            <TableCell sx={{ color: "black" }}>Email</TableCell>
+            <TableCell sx={{ color: "black" }}>Role</TableCell>
+            <TableCell sx={{ color: "black" }}>Actions</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
           {allUsersData && allUsersData.length > 0 ? (
             allUsersData.map((user) => (
               <TableRow key={user.userId}>
-                <TableCell>{user.userId}</TableCell>
-                <TableCell>{user.name}</TableCell>
-                <TableCell>{user.email}</TableCell>
-                <TableCell>{user.role}</TableCell>
+                <TableCell sx={{ color: "black" }}>{user.userId}</TableCell>
+                <TableCell sx={{ color: "black" }}>{user.name}</TableCell>
+                <TableCell sx={{ color: "black" }}>{user.email}</TableCell>
+                <TableCell sx={{ color: "black" }}>{user.role}</TableCell>
+                <TableCell align="center">
+          {/* <IconButton
+            aria-label="edit"
+            color="primary"
+            onClick={() => onEdit(plan.insuranceId)}
+          >
+            <EditIcon />
+          </IconButton> */}
+          <IconButton
+            aria-label="delete"
+            color="error"
+            onClick={() => handleDeleteUser(user.userId)}
+          >
+            <DeleteIcon />
+          </IconButton>
+        </TableCell>
               </TableRow>
             ))
           ) : (
@@ -268,11 +376,15 @@ export default function Dashboard(props) {
         <TableHead>
           <TableRow>
             <TableCell />
-            <TableCell>Plan Name</TableCell>
-            <TableCell>Coverage Type</TableCell>
-            <TableCell align="right">Monthly Premium</TableCell>
-            <TableCell>Description</TableCell>
-            <TableCell align="center">Actions</TableCell>
+            <TableCell sx={{ color: "black" }}>Plan Name</TableCell>
+            <TableCell sx={{ color: "black" }}>Coverage Type</TableCell>
+            <TableCell align="right" sx={{ color: "black" }}>
+              Monthly Premium
+            </TableCell>
+            <TableCell sx={{ color: "black" }}>Description</TableCell>
+            <TableCell align="center" sx={{ color: "black" }}>
+              Actions
+            </TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -295,19 +407,28 @@ export default function Dashboard(props) {
         <TableHead>
           <TableRow>
             <TableCell />
-            <TableCell>Order ID</TableCell>
-            <TableCell>User ID</TableCell>
-            <TableCell>Gym Name</TableCell>
-            <TableCell align="right">Insurance ID</TableCell>
-            <TableCell>Start Date</TableCell>
-            <TableCell>End Date</TableCell>
-            <TableCell align="right">Premium Amount</TableCell>
-            <TableCell>Status</TableCell>
+            <TableCell sx={{ color: "black" }}>Order ID</TableCell>
+            <TableCell sx={{ color: "black" }}>User ID</TableCell>
+            <TableCell sx={{ color: "black" }}>Gym Name</TableCell>
+            <TableCell align="right" sx={{ color: "black" }}>
+              Insurance ID
+            </TableCell>
+            <TableCell sx={{ color: "black" }}>Start Date</TableCell>
+            <TableCell sx={{ color: "black" }}>End Date</TableCell>
+            <TableCell align="right" sx={{ color: "black" }}>
+              Premium Amount
+            </TableCell>
+            <TableCell sx={{ color: "black" }}>Status</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
           {ordersData.map((order) => (
-            <OrderRow key={order.giId} order={order} gymName={getGymNameById(order.gymId)}  />
+            <OrderRow
+              key={order.giId}
+              order={order}
+              gymName={getGymNameById(order.gymId)}
+              insuranceData={insuranceData}
+            />
           ))}
         </TableBody>
       </Table>
@@ -329,11 +450,10 @@ export default function Dashboard(props) {
 
   const getGymNameById = (gymId) => {
     console.log("Looking for gym with ID:", gymId, "Type:", typeof gymId);
-    const gym = gyms.find((g) => g.gymId === gymId); 
-    console.log("Found gym:", gym); 
-    return gym ? gym.gymName : "NA"; 
+    const gym = gyms.find((g) => g.gymId === gymId);
+    console.log("Found gym:", gym);
+    return gym ? gym.gymName : "NA";
   };
-  
 
   return (
     <Box>
@@ -341,19 +461,22 @@ export default function Dashboard(props) {
         Dashboard
       </Typography>
       <Button
-          variant="contained"
-          color="primary"
-          size="large"
-          onClick={() => navigate("/plansForm")}
-          sx={{
-            borderRadius: "20px",
-            padding: "10px 20px",
-            textTransform: "none",
-            fontWeight: "bold",
-          }}
-        >
-          Add New Plan
-        </Button>
+        variant="contained"
+        color="primary"
+        size="large"
+        onClick={() => navigate("/plansForm")}
+        sx={{
+          borderRadius: "20px",
+          padding: "10px 20px",
+          textTransform: "none",
+          fontWeight: "bold",
+        }}
+      >
+        Add New Plan
+      </Button>
+      <br />
+      <br />
+      <br />
       <Button
         onClick={() => setView("products")}
         variant={view === "products" ? "contained" : "outlined"}

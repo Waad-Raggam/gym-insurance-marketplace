@@ -1,52 +1,42 @@
+html, body {
+  height: 100%;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.main-content {
+  flex: 1;
+}
+
 .footer {
-    background-color: #333;
-    color: #E8EBF7;
-    padding: 20px 0;
-    text-align: center;
-  }
-  
-  .footer-logo {
-    font-family: 'Oswald', sans-serif;
-    font-size: 1.5rem;
-    font-weight: 700;
-    margin-bottom: 15px;
-  }
-  
-  .footer-links {
-    display: flex;
-    justify-content: center;
-    gap: 20px;
-    margin-bottom: 15px;
-  }
-  
-  .footer-links a {
-    color: #E8EBF7;
-    font-family: 'Roboto Condensed', sans-serif;
-    text-decoration: none;
-    font-size: 0.9rem;
-  }
-  
-  .footer-links a:hover {
-    color: #ffb400; 
-  }
-  
-  .footer-social {
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-    margin-bottom: 15px;
-  }
-  
-  .footer-social .MuiIconButton-root {
-    color: #E8EBF7;
-  }
-  
-  .footer-social .MuiIconButton-root:hover {
-    color: #ffb400;
-  }
-  
-  .footer-copyright {
-    font-size: 0.8rem;
-    color: #bbb;
-  }
-  
+  background-color: #333;
+  color: white;
+  padding: 20px;
+  text-align: center;
+  width: 100%;
+}
+
+.footer-links {
+  margin-bottom: 15px;
+}
+
+.footer-links a {
+  margin: 0 10px;
+  color: white;
+  text-decoration: none;
+}
+
+.footer-social {
+  margin: 10px 0;
+}
+
+.footer-social .MuiIconButton-root {
+  margin: 0 5px;
+  color: white;
+}
+
+.footer-copyright {
+  font-size: 12px;
+  margin-top: 10px;
+}

@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
+import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { jwtDecode } from "jwt-decode";
@@ -48,7 +50,7 @@ export default function UserLogin() {
 
   const onSubmit = (data) => {
     axios
-      .post("http://localhost:5125/api/v1/User/LogIn", data)
+      .post("https://gym-insurance-marketplace-backend.onrender.com/api/v1/User/LogIn", data)
       .then((response) => {
         const token = response.data;
         localStorage.setItem("token", token);
@@ -62,7 +64,7 @@ export default function UserLogin() {
         if (decodedToken.role === "Admin") {
           navigate("/dashboard");
         } else {
-          navigate("/gymForm");
+          navigate("/profile");
         }
         window.location.reload();
       })
@@ -74,37 +76,60 @@ export default function UserLogin() {
 
   return (
     <div>
-      <h1>User Login</h1>
+      <Box sx={{ maxWidth: 400, mx: "auto", mt: 4, p: 3, boxShadow: 3 }}>
+      <Typography variant="h4" align="center" gutterBottom>
+        User Login
+      </Typography>
       <form onSubmit={handleSubmit(onSubmit)}>
-        <TextField
-          label="Email"
-          {...register("email")}
-          error={!!errors.email}
-          helperText={errors.email?.message}
-        />
-        <FormControl variant="standard">
-          <InputLabel>Password</InputLabel>
-          <Input
-            type={showPassword ? "text" : "password"}
-            {...register("password")}
-            error={!!errors.password}
-            endAdornment={
-              <InputAdornment position="end">
-                <IconButton
-                  onClick={handleClickShowPassword}
-                  onMouseDown={handleMouseDownPassword}
-                >
-                  {showPassword ? <VisibilityOff /> : <Visibility />}
-                </IconButton>
-              </InputAdornment>
-            }
+        <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+          <TextField
+            label="Email"
+            {...register("email")}
+            error={!!errors.email}
+            helperText={errors.email?.message}
+            fullWidth
+            InputProps={{
+              style: { color: "#000000" },
+            }}
           />
-          <p style={{ color: "red" }}>{errors.password?.message}</p>
-        </FormControl>
-        <Button type="submit" variant="contained" color="primary">
-          Log In
-        </Button>
+          <FormControl variant="standard" fullWidth>
+            <InputLabel>Password</InputLabel>
+            <Input
+              type={showPassword ? "text" : "password"}
+              {...register("password")}
+              error={!!errors.password}
+              endAdornment={
+                <InputAdornment position="end">
+                  <IconButton
+                    onClick={handleClickShowPassword}
+                    onMouseDown={handleMouseDownPassword}
+                  >
+                    {showPassword ? <VisibilityOff /> : <Visibility />}
+                  </IconButton>
+                </InputAdornment>
+              }
+              sx={{
+                color: "#000000", 
+              }}
+            />
+            <Typography color="error" variant="body2">
+              {errors.password?.message}
+            </Typography>
+          </FormControl>
+          <Button type="submit" variant="contained" color="primary" fullWidth>
+            Log In
+          </Button>
+          <Box textAlign="center" mt={2}>
+            <Typography variant="body2">
+              Don't have an account?{" "}
+              <Link to="/register" style={{ color: "#1D1A05", textDecoration: "none" }}>
+                Register here
+              </Link>
+            </Typography>
+          </Box>
+        </Box>
       </form>
+    </Box>
     </div>
   );
 }
