@@ -107,7 +107,7 @@ Row.propTypes = {
 };
 
 function OrderRow(props) {
-  const { order, gymName } = props;
+  const { order, gymName, insuranceData } = props;
   const [open, setOpen] = useState(false);
 
   return (
@@ -155,11 +155,38 @@ function OrderRow(props) {
               >
                 Insurance Plans
               </Typography>
-              <ul style={{ paddingLeft: "20px", margin: 0, color: "black" }}>
+              {/* <ul style={{ paddingLeft: "20px", margin: 0, color: "black" }}>
                 {order.insuranceIds.map((id, index) => (
                   <li key={index}>{id}</li>
                 ))}
-              </ul>
+              </ul> */}
+              <Table size="small" aria-label="insurance-ids">
+                <TableBody>
+                  {order.insuranceIds.map((id, index) => {
+                    const insurance = insuranceData[id]; 
+                    return (
+                      <TableRow key={index}>
+                        <TableCell component="th" scope="row" sx={{ color: "black" }}>
+                          {insurance?.planName || "Unknown"}
+                        </TableCell>
+                        <TableCell sx={{ color: "black" }}>
+                          ${insurance?.monthlyPremium || "N/A"}
+                        </TableCell>
+                        <TableCell sx={{ color: "black" }}>
+                          {insurance?.coverageType || "N/A"}
+                        </TableCell>
+                        <TableCell sx={{ color: "black" }}>
+                          <ul>
+                            {insurance?.coverageDetails?.map((detail, idx) => (
+                              <li key={idx}>{detail}</li>
+                            )) || "N/A"}
+                          </ul>
+                        </TableCell>
+                      </TableRow>
+                    );
+                  })}
+                </TableBody>
+              </Table>  
             </Box>
           </Collapse>
         </TableCell>
@@ -187,6 +214,7 @@ export default function Dashboard(props) {
   const usersUrl = "http://localhost:5125/api/v1/User/";
   const ordersUrl = "http://localhost:5125/api/v1/GymInsurance";
   const plansUrl = "http://localhost:5125/api/v1/InsurancePlan/";
+  const insuranceUrl = `http://localhost:5125/api/v1/InsurancePlan`; 
   const navigate = useNavigate();
 
   const [view, setView] = useState("products");
@@ -194,10 +222,12 @@ export default function Dashboard(props) {
   const [isUserDataLoading, setIsUserDataLoading] = useState(true);
   const [ordersData, setOrdersData] = useState([]);
   const [isOrderDataLoading, setIsOrderDataLoading] = useState(true);
+  const [insuranceData, setInsuranceData] = useState({});
 
   useEffect(() => {
     getAllUsersData();
     fetchOrdersData();
+    fetchInsuranceData();
   }, []);
 
   function getAllUsersData() {
@@ -234,6 +264,25 @@ export default function Dashboard(props) {
         console.log("Error fetching orders:", error);
       });
   }
+
+  function fetchInsuranceData() {
+    const token = localStorage.getItem("token");
+    if (!token) return;
+
+    axios
+      .get(insuranceUrl, { headers: { Authorization: `Bearer ${token}` } })
+      .then((response) => {
+        const insuranceMap = response.data.reduce((acc, insurance) => {
+          acc[insurance.insuranceId] = insurance;
+          return acc;
+        }, {});
+        setInsuranceData(insuranceMap);
+      })
+      .catch((error) => {
+        console.log("Error fetching insurance data:", error);
+      });
+  }
+
 
   function handleDeleteProduct(insuranceId) {
     if (window.confirm("Are you sure you want to delete this plan?")) {
@@ -378,6 +427,7 @@ export default function Dashboard(props) {
               key={order.giId}
               order={order}
               gymName={getGymNameById(order.gymId)}
+              insuranceData={insuranceData}
             />
           ))}
         </TableBody>
