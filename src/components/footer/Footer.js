@@ -5,9 +5,9 @@ import "./Footer.css";
 
 export default function Footer() {
   return (
-    <Box className="footer">
+    <Box className="footer" >
       <Typography variant="h6" className="footer-logo">
-        Gym Insurance Platform
+        Gym Insurance Marketplace
       </Typography>
 
       <Box className="footer-links">
@@ -38,7 +38,7 @@ export default function Footer() {
       </Box>
 
       <Typography variant="body2" className="footer-copyright">
-        © {new Date().getFullYear()} Gym Insurance Platform. All rights reserved.
+        © {new Date().getFullYear()} Gym Insurance Marketplace. All rights reserved.
       </Typography>
     </Box>
   );

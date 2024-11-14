@@ -44,6 +44,11 @@ export default function SearchInsurancePlans() {
         value={searchTerm}
         onChange={handleSearchChange}
         className="search-input"
+        sx={{
+          '& .MuiInputBase-input': {
+            color: '#1D1A05', 
+          },
+        }}
       />
 
       {results.length > 0 && (
@@ -58,6 +63,12 @@ export default function SearchInsurancePlans() {
                 <ListItemText
                   primary={`${searchTerm} > ${result.planName}`}
                   secondary={result.coverageType}
+                  sx={{
+                    color: "#1D1A05", 
+                    '& .MuiListItemText-secondary': {
+                      color: "#92140C", 
+                    },
+                  }}
                 />
               </ListItem>
             ))}

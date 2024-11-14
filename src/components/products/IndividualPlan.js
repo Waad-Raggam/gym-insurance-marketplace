@@ -45,7 +45,7 @@ export default function IndividualPlan() {
       { gymId: gymIds, planId: product.insuranceId, planName: product.planName }
     ];
     localStorage.setItem("cart", JSON.stringify(updatedCart));
-    alert(`${product.planName} added to cart for gyms ${gymIds.join(', ')}`);
+    alert(`${product.planName} added to cart`);
   };
 
   if (loading || error) {
@@ -61,11 +61,11 @@ export default function IndividualPlan() {
       <div style={{ maxWidth: "345px", width: "100%", margin: "0 auto" }}>
         <Card sx={{ maxWidth: 345 }} className="card">
           <CardContent>
-            <Typography gutterBottom variant="h6" component="div">
-              {product.planName}
-            </Typography>
-            <Chip label={product.monthlyPremium} variant="outlined" />
-            <Typography variant="body2" color="text.secondary">
+          <Typography variant="h5" gutterBottom>
+                  {product.planName}
+                </Typography>
+            <Chip label={product.monthlyPremium} variant="outlined" color="primary"/>
+            <Typography variant="body2" color="secondary">
               {product.coverageType}
             </Typography>
             <Typography variant="body2">

@@ -153,16 +153,16 @@ function App() {
           element: <InsurancePlanForm userData={userData} />,
         },
         {
-          path: "/editPlan/:insuranceId", 
+          path: "/editPlan/:insuranceId",
           element: <EditPlanForm />,
         },
         {
           path: "/cart",
-          element: <Cart userData={userData}/>,
+          element: <Cart userData={userData} gyms={gyms} />,
         },
         {
           path: "/orders",
-          element: <Orders userData = {userData} gyms={gyms} />,
+          element: <Orders userData={userData} gyms={gyms} />,
         },
       ],
       // : []),
