@@ -13,7 +13,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
 export default function InsurancePlanForm() {
-    const navigate = useNavigate();
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     planName: "",
     monthlyPremium: "",
@@ -24,9 +24,14 @@ export default function InsurancePlanForm() {
   const [responseMessage, setResponseMessage] = useState(null);
 
   const coverageOptions = [
-    "General Liability",
-    "Workers’ Compensation",
-    "Professional Liability",
+    "General Liability Insurance",
+    "Workers’ Compensation Insurance",
+    "Professional Liability Insurance",
+    "Business Interruption Insurance",
+    "Commercial Property Insurance",
+    "Equipment Insurance",
+    "Product Liability Insurance",
+    "Accident Insurance"
   ];
 
   const handleChange = (e) => {
@@ -48,7 +53,7 @@ export default function InsurancePlanForm() {
     e.preventDefault();
     try {
       const response = await axios.post(
-        "http://localhost:5125/api/v1/InsurancePlan/",
+        "https://gym-insurance-marketplace-backend.onrender.com/api/v1/InsurancePlan/",
         formData,
         {
           headers: {
@@ -60,7 +65,7 @@ export default function InsurancePlanForm() {
 
       setResponseMessage("Plan submitted successfully");
       console.log("Response:", response.data);
-    //   navigate("/dashboard");
+      //   navigate("/dashboard");
     } catch (error) {
       setResponseMessage("Error submitting plan");
       console.error("Error:", error);
@@ -81,7 +86,9 @@ export default function InsurancePlanForm() {
               value={formData.planName}
               onChange={handleChange}
               fullWidth
-              required
+              required  InputProps={{
+                style: { color: "#000000" } 
+              }}
             />
           </Grid>
           <Grid item xs={12}>
@@ -92,7 +99,9 @@ export default function InsurancePlanForm() {
               value={formData.monthlyPremium}
               onChange={handleChange}
               fullWidth
-              required
+              required   InputProps={{
+                style: { color: "#000000" } 
+              }}
             />
           </Grid>
           <Grid item xs={12}>
@@ -102,7 +111,9 @@ export default function InsurancePlanForm() {
               value={formData.coverageType}
               onChange={handleChange}
               fullWidth
-              required
+              required  InputProps={{
+                style: { color: "#000000" } 
+              }}
             />
           </Grid>
           <Grid item xs={12}>
@@ -114,7 +125,9 @@ export default function InsurancePlanForm() {
               multiline
               rows={4}
               fullWidth
-              required
+              required  InputProps={{
+                style: { color: "#000000" } 
+              }}
             />
           </Grid>
           <Grid item xs={12}>

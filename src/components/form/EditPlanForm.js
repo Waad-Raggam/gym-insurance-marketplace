@@ -12,7 +12,7 @@ function EditPlanForm() {
     planDescription: "",
   });
   const navigate = useNavigate();
-  const editPlanUrl = "http://localhost:5125/api/v1/InsurancePlan/";
+  const editPlanUrl = "https://gym-insurance-marketplace-backend.onrender.com/api/v1/InsurancePlan/";
 
   useEffect(() => {
     axios

@@ -14,7 +14,7 @@ export default function SearchInsurancePlans() {
     if (query.length > 0) {
       try {
         const response = await fetch(
-          `http://localhost:5125/api/v1/InsurancePlan/name?coverageType=${encodeURIComponent(query)}`
+          `https://gym-insurance-marketplace-backend.onrender.com/api/v1/InsurancePlan/name?coverageType=${encodeURIComponent(query)}`
         );
         if (response.ok) {
           const data = await response.json();
@@ -44,6 +44,11 @@ export default function SearchInsurancePlans() {
         value={searchTerm}
         onChange={handleSearchChange}
         className="search-input"
+        sx={{
+          '& .MuiInputBase-input': {
+            color: '#1D1A05', 
+          },
+        }}
       />
 
       {results.length > 0 && (
@@ -58,6 +63,12 @@ export default function SearchInsurancePlans() {
                 <ListItemText
                   primary={`${searchTerm} > ${result.planName}`}
                   secondary={result.coverageType}
+                  sx={{
+                    color: "#1D1A05", 
+                    '& .MuiListItemText-secondary': {
+                      color: "#92140C", 
+                    },
+                  }}
                 />
               </ListItem>
             ))}

@@ -1,13 +1,22 @@
-import { TextField, Button,  InputAdornment, IconButton, Input } from "@mui/material";
 import React, { useState } from "react";
+import {
+  TextField,
+  Button,
+  InputAdornment,
+  IconButton,
+  Input,
+  FormControl,
+  InputLabel,
+  Box,
+  Typography,
+} from "@mui/material";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
-
 
 const schema = yup
   .object({
@@ -25,7 +34,7 @@ const schema = yup
         /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
         "Password must have one uppercase, one lowercase, one number, and one special character"
       ),
-    role: yup.string().required("Role is required"), 
+    role: yup.string().required("Role is required"),
   })
   .required();
 
@@ -36,7 +45,6 @@ export default function UserRegistration() {
   const handleClickShowPassword = () => setShowPassword((show) => !show);
   const handleMouseDownPassword = (event) => event.preventDefault();
 
-
   const {
     register,
     handleSubmit,
@@ -46,7 +54,7 @@ export default function UserRegistration() {
   });
 
   const onSubmit = (data) => {
-    const signUpUrl = "http://localhost:5125/api/v1/User/SignUp";
+    const signUpUrl = "https://gym-insurance-marketplace-backend.onrender.com/api/v1/User/SignUp";
     axios
       .post(signUpUrl, data)
       .then((response) => {
@@ -66,84 +74,110 @@ export default function UserRegistration() {
   };
 
   return (
-    <div>
-      <h1>User Registration</h1>
+    <Box sx={{ maxWidth: 400, mx: "auto", mt: 4, p: 3, boxShadow: 3 }}>
+      <Typography variant="h4" align="center" gutterBottom>
+        User Registration
+      </Typography>
       <form onSubmit={handleSubmit(onSubmit)}>
-        {/* Name Field */}
-        <TextField
-          id="name"
-          label="Name"
-          variant="standard"
-          {...register("name")}
-          error={!!errors.name}
-          helperText={errors.name?.message}
-        />
-
-        {/* Email Field */}
-        <TextField
-          id="email"
-          label="Email"
-          variant="standard"
-          {...register("email")}
-          error={!!errors.email}
-          helperText={errors.email?.message}
-        />
-
-        {/* Phone Number Field */}
-        <TextField
-          id="phoneNumber"
-          label="Phone Number"
-          variant="standard"
-          {...register("phoneNumber")}
-          error={!!errors.phoneNumber}
-          helperText={errors.phoneNumber?.message}
-        />
-
-        {/* Password Field */}
-        <Input
-            type={showPassword ? "text" : "password"}
-            {...register("password")}
-            error={!!errors.password}
-            endAdornment={
-              <InputAdornment position="end">
-                <IconButton onClick={handleClickShowPassword} onMouseDown={handleMouseDownPassword}>
-                  {showPassword ? <VisibilityOff /> : <Visibility />}
-                </IconButton>
-              </InputAdornment>
-            }
+        <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+          <TextField
+            label="Name"
+            {...register("name")}
+            error={!!errors.name}
+            helperText={errors.name?.message}
+            fullWidth
+            InputProps={{
+              style: { color: "#000000" },
+            }}
           />
-        {/* <Input
-            type={showPassword ? "text" : "password"}
-            {...register("password")}
-            error={!!errors.password}
-            endAdornment={
-              <InputAdornment position="end">
-                <IconButton onClick={handleClickShowPassword} onMouseDown={handleMouseDownPassword}>
-                  {showPassword ? <VisibilityOff /> : <Visibility />}
-                </IconButton>
-              </InputAdornment>
-            }
-          /> */}
-        <TextField
-          id="role"
-          label="Role"
-          select
-          SelectProps={{
-            native: true,
-          }}
-          {...register("role")}
-          error={!!errors.role}
-          helperText={errors.role?.message}
-        >
-          <option value="">Select Role</option>
-          <option value="Customer">Customer</option>
-          <option value="Admin">Admin</option>
-        </TextField>
 
-        <Button color="warning" variant="contained" type="submit">
-          Sign up
-        </Button>
+          <TextField
+            label="Email"
+            {...register("email")}
+            error={!!errors.email}
+            helperText={errors.email?.message}
+            fullWidth
+            InputProps={{
+              style: { color: "#000000" },
+            }}
+          />
+
+          <TextField
+            label="Phone Number"
+            {...register("phoneNumber")}
+            error={!!errors.phoneNumber}
+            helperText={errors.phoneNumber?.message}
+            fullWidth
+            InputProps={{
+              style: { color: "#000000" },
+            }}
+          />
+
+          <FormControl variant="standard" fullWidth>
+            <InputLabel>Password</InputLabel>
+            <Input
+              type={showPassword ? "text" : "password"}
+              {...register("password")}
+              error={!!errors.password}
+              endAdornment={
+                <InputAdornment position="end">
+                  <IconButton
+                    onClick={handleClickShowPassword}
+                    onMouseDown={handleMouseDownPassword}
+                  >
+                    {showPassword ? <VisibilityOff /> : <Visibility />}
+                  </IconButton>
+                </InputAdornment>
+              }
+              sx={{
+                color: "#000000", 
+              }}
+            />
+            <Typography color="error" variant="body2">
+              {errors.password?.message}
+            </Typography>
+          </FormControl>
+          <TextField
+            label="Select Role"
+            select
+            SelectProps={{
+              native: true,
+            }}
+            {...register("role")}
+            error={!!errors.role}
+            helperText={errors.role?.message}
+            fullWidth
+            InputProps={{
+              style: { color: "#000000" },
+            }}
+          >
+            {/* <option value="" style={{ color: "#9e9e9e" }}>
+              Select Role
+            </option> */}
+            <option value="Customer" style={{ color: "#1D1A05" }}>
+              Customer
+            </option>
+            <option value="Admin" style={{ color: "#1D1A05" }}>
+              Admin
+            </option>
+          </TextField>
+
+          <Button type="submit" variant="contained" color="primary" fullWidth>
+            Sign Up
+          </Button>
+        </Box>
       </form>
-    </div>
+      <Box textAlign="center" mt={2}>
+        <Typography variant="body2">
+          Already have an account?{" "}
+          <Link
+            to="/login"
+            style={{ color: "#1D1A05", textDecoration: "none" }}
+          >
+            Log in here
+          </Link>
+        </Typography>
+      </Box>
+    </Box>
   );
 }
