@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { getCart, removeFromCart, clearCart } from "../../utils/cart/Cart";
 import { Card, CardContent, Typography, Button } from "@mui/material";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import Chip from "@mui/material/Chip";
 import axios from "axios";
 
 export default function Cart(props) {
-  const {userData} = props;
+  const { userData, gyms, response } = props;
   const navigate = useNavigate();
   const [cartItems, setCartItems] = useState([]);
 
@@ -13,6 +14,8 @@ export default function Cart(props) {
     const storedCart = JSON.parse(localStorage.getItem("cart")) || [];
     setCartItems(storedCart);
     console.log(storedCart);  
+    console.log(gyms);  
+    console.log("resp "+response);  
   }, []);
 
   const handleRemove = (index) => {
@@ -22,7 +25,6 @@ export default function Cart(props) {
 
   const handleCheckout = () => {
     const storedCart = JSON.parse(localStorage.getItem("cart")) || []; 
-    
     const gymInsuranceMap = {}; 
     
     storedCart.forEach((item) => {
@@ -82,7 +84,20 @@ export default function Cart(props) {
     setCartItems([]);
   };
 
+  const getGymNames = (gymIds) => {
+    console.log(gymIds);
+    return gymIds.map(gymId => {
+      const gym = gyms.find(gym => gym.gymId === gymId); 
+      return gym ? gym.gymName : "Gym not found";
+    });
+  };
+
+  if (!cartItems) {
+    return null;
+  }
+  
   return (
+                  
     <div>
       <h2>Cart</h2>
       {cartItems.length === 0 ? (
@@ -91,16 +106,28 @@ export default function Cart(props) {
         cartItems.map((item, index) => (
           <Card key={index} sx={{ maxWidth: 345, margin: "16px" }}>
             <CardContent>
-              <Typography variant="h6">{item.planName}</Typography>
-              <Typography variant="body2" color="text.secondary">
-                {item.coverageType}
-              </Typography>
+              <Typography variant="h6" color="primary">{item.planName}</Typography> <Chip label={item.monthlyPremium} variant="outlined" color="primary"/>
+            <Typography variant="body2" color="secondary">
+              {item.coverageType}
+            </Typography>
               <Typography variant="body2">
-                Coverage Details:
+              Coverage Details:
+              <ul>
+                {Array.isArray(item.coverageDetails) ? (
+                  item.coverageDetails.map((detail, index) => (
+                    <li key={index}>{detail}</li>
+                  ))
+                ) : (
+                  <li>No coverage details available</li>
+                )}
+              </ul>
+            </Typography>
+              <Typography variant="body2">
+                Gyms to be insured:
                 <ul>
                   {Array.isArray(item.gymId) ? (
-                    item.gymId.map((gymId, index) => (
-                      <li key={index}>{gymId}</li>
+                    getGymNames(item.gymId).map((gymName, index) => (
+                      <li key={index}>{gymName}</li> 
                     ))
                   ) : (
                     <li>No gym ID available</li>

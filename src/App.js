@@ -158,7 +158,7 @@ function App() {
         },
         {
           path: "/cart",
-          element: <Cart userData={userData} gyms={gyms} />,
+          element: <Cart userData={userData} gyms={gyms} response={response} />,
         },
         {
           path: "/orders",

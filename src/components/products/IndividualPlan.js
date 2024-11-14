@@ -7,7 +7,7 @@ import CardContent from "@mui/material/CardContent";
 import Typography from "@mui/material/Typography";
 import Chip from "@mui/material/Chip";
 import LoadingAndErrorState from "../states/LoadingAndErrorState";
-import { addToCart } from "../../utils/cart/Cart"; 
+import { addToCart } from "../../utils/cart/Cart";
 import "./IndividualPlan.css";
 
 export default function IndividualPlan() {
@@ -18,7 +18,9 @@ export default function IndividualPlan() {
   const [error, setError] = useState(null);
 
   const queryParams = new URLSearchParams(location.search);
-  const gymIds = queryParams.get('gymId') ? queryParams.get('gymId').split(',') : [];
+  const gymIds = queryParams.get("gymId")
+    ? queryParams.get("gymId").split(",")
+    : [];
 
   const url = `http://localhost:5125/api/v1/InsurancePlan/${planId}`;
 
@@ -42,7 +44,14 @@ export default function IndividualPlan() {
     const currentCart = JSON.parse(localStorage.getItem("cart")) || [];
     const updatedCart = [
       ...currentCart,
-      { gymId: gymIds, planId: product.insuranceId, planName: product.planName }
+      {
+        gymId: gymIds,
+        planId: product.insuranceId,
+        planName: product.planName,
+        coverageDetails: product.coverageDetails,
+        monthlyPremium: product.monthlyPremium,
+        coverageType: product.coverageType,
+      },
     ];
     localStorage.setItem("cart", JSON.stringify(updatedCart));
     alert(`${product.planName} added to cart`);
@@ -61,10 +70,14 @@ export default function IndividualPlan() {
       <div style={{ maxWidth: "345px", width: "100%", margin: "0 auto" }}>
         <Card sx={{ maxWidth: 345 }} className="card">
           <CardContent>
-          <Typography variant="h5" gutterBottom>
-                  {product.planName}
-                </Typography>
-            <Chip label={product.monthlyPremium} variant="outlined" color="primary"/>
+            <Typography variant="h5" gutterBottom>
+              {product.planName}
+            </Typography>
+            <Chip
+              label={product.monthlyPremium}
+              variant="outlined"
+              color="primary"
+            />
             <Typography variant="body2" color="secondary">
               {product.coverageType}
             </Typography>
