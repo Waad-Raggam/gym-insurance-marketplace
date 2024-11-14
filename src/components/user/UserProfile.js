@@ -14,11 +14,11 @@ export default function UserProfile(props) {
         <TextField label="Name" value={userData.name} fullWidth disabled variant="outlined" />
       </Box>
       <Box sx={{ marginBottom: 2 }}>
-        <TextField label="Email" value={userData.email} fullWidth disabled variant="outlined" />
+        <TextField label="Email" value={userData.email} fullWidth disabled variant="outlined"  />
       </Box>
-      <Box sx={{ marginBottom: 2 }}>
+      {/* <Box sx={{ marginBottom: 2 }}>
         <TextField label="Role" value={userData.role} fullWidth disabled variant="outlined" />
-      </Box>
+      </Box> */}
 
       <Typography variant="h5" gutterBottom sx={{ marginTop: 4 }}>Your Gyms</Typography>
       {userGyms.length > 0 ? (

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Card, CardContent, CardActionArea, Typography } from "@mui/material";
+import { Card, CardContent, CardActionArea, Typography, TextField } from "@mui/material";
 import Button from "@mui/material/Button";
 import { Link } from "react-router-dom";
 import "./InsurancePlans.css";
@@ -7,18 +7,20 @@ import "./InsurancePlans.css";
 export default function InsurancePlans(props) {
   const { response, userGyms } = props;
   const [selectedGyms, setSelectedGyms] = useState([]);
+  const [maxPrice, setMaxPrice] = useState("");
 
   const handleGymSelect = (gymId) => {
     setSelectedGyms((prevSelectedGyms) => {
       const updatedSelectedGyms = prevSelectedGyms.includes(gymId)
         ? prevSelectedGyms.filter((id) => id !== gymId)
         : [...prevSelectedGyms, gymId];
-
-      console.log("Selected gyms:", updatedSelectedGyms);
-
       return updatedSelectedGyms;
     });
   };
+
+  const filteredPlans = response.filter(
+    (plan) => !maxPrice || plan.monthlyPremium <= parseFloat(maxPrice)
+  );
 
   return (
     <div className="plans-grid">
@@ -59,9 +61,22 @@ export default function InsurancePlans(props) {
       </div>
 
       <h1>Insurance Plans</h1>
+      <TextField
+        label="Max Monthly Premium"
+        variant="outlined"
+        type="number"
+        value={maxPrice}
+        onChange={(e) => setMaxPrice(e.target.value)}
+        // fullWidth
+        margin="normal"
+        InputProps={{
+          style: { color: "#000000" },
+        }}
+      />
+
       <div className="gyms-row" style={{ display: "flex", flexWrap: "wrap", gap: "20px" }}>
-        {Array.isArray(response) && response.length > 0 ? (
-          response.map((plan) => (
+        {Array.isArray(filteredPlans) && filteredPlans.length > 0 ? (
+          filteredPlans.map((plan) => (
             <Card
               key={plan.insuranceId}
               className="card"
@@ -91,15 +106,15 @@ export default function InsurancePlans(props) {
                   </Typography>
                 </CardContent>
                 <div style={{ display: 'flex', justifyContent: 'center', padding: '16px' }}>
-          <Link to={`${plan.insuranceId}?gymId=${selectedGyms.join(",")}`}>
-            <Button variant="outlined">View plan</Button>
-          </Link>
-        </div>
+                  <Link to={`${plan.insuranceId}?gymId=${selectedGyms.join(",")}`}>
+                    <Button variant="outlined">View plan</Button>
+                  </Link>
+                </div>
               </CardActionArea>
             </Card>
           ))
         ) : (
-          <Typography variant="body2">No insurance plans available.</Typography>
+          <Typography variant="body2">No insurance plans available within the selected price range.</Typography>
         )}
       </div>
     </div>

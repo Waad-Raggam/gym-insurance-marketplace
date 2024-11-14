@@ -104,6 +104,9 @@ export default function GymForm(props) {
               onChange={handleChange}
               fullWidth
               required
+              InputProps={{
+                style: { color: "#000000" } 
+              }}
             />
           </Grid>
           <Grid item xs={12}>
@@ -114,6 +117,9 @@ export default function GymForm(props) {
               onChange={handleChange}
               fullWidth
               required
+              InputProps={{
+                style: { color: "#000000" } 
+              }}
             />
           </Grid>
           <Grid item xs={6}>
@@ -124,6 +130,9 @@ export default function GymForm(props) {
               onChange={handleChange}
               fullWidth
               required
+              InputProps={{
+                style: { color: "#000000" } 
+              }}
             />
           </Grid>
           <Grid item xs={6}>
@@ -134,6 +143,9 @@ export default function GymForm(props) {
               onChange={handleChange}
               fullWidth
               required
+              InputProps={{
+                style: { color: "#000000" } 
+              }}
             />
           </Grid>
           <Grid item xs={12}>
@@ -144,6 +156,9 @@ export default function GymForm(props) {
               onChange={handleChange}
               fullWidth
               required
+              InputProps={{
+                style: { color: "#000000" } 
+              }}
             />
           </Grid>
           <Grid item xs={6}>
@@ -155,6 +170,9 @@ export default function GymForm(props) {
               onChange={handleChange}
               fullWidth
               required
+              InputProps={{
+                style: { color: "#000000" } 
+              }}
             />
           </Grid>
           <Grid item xs={6}>
@@ -166,6 +184,9 @@ export default function GymForm(props) {
               onChange={handleChange}
               fullWidth
               required
+              InputProps={{
+                style: { color: "#000000" } 
+              }}
             />
           </Grid>
           <Grid item xs={6}>
@@ -177,6 +198,9 @@ export default function GymForm(props) {
               onChange={handleChange}
               fullWidth
               required
+              InputProps={{
+                style: { color: "#000000" } 
+              }}
             />
           </Grid>
           <Grid item xs={12}>
@@ -188,6 +212,9 @@ export default function GymForm(props) {
               fullWidth
               required
               placeholder="e.g., Mon-Fri 6:00-22:00, Sat-Sun 8:00-20:00"
+              InputProps={{
+                style: { color: "#000000" } 
+              }}
             />
           </Grid>
           <Grid item xs={12}>
