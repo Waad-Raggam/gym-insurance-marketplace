@@ -46,12 +46,12 @@ export default function Navbar({
           <SearchInsurancePlans />
         </Box>
         <Box sx={{ display: "flex", gap: 2 }}>
-          {isAuthenticated ? (
+          {isAuthenticated && userData.role === "Customer" ? (
             <Button component={Link} to="/plans" color="inherit">
               browse plans
             </Button>
           ) : null}
-          {isAuthenticated ? (
+          {isAuthenticated && userData.role === "Customer" ? (
             <Button component={Link} to="/gymForm" color="inherit">
               Add gym
             </Button>
@@ -62,17 +62,17 @@ export default function Navbar({
           <Button color="inherit" component={Link} to="#contact">
             Contact
           </Button> */}
-          {isAuthenticated ? (
+          {isAuthenticated && userData.role === "Customer" ? (
             <Button component={Link} to="/orders" color="inherit">
               Your orders
             </Button>
           ) : null}
-          {isAuthenticated ? (
+          {isAuthenticated && userData.role === "Customer" ? (
             <Button component={Link} to="/cart" color="inherit">
               Cart
             </Button>
           ) : null}
-          {isAuthenticated ? (
+          {isAuthenticated && userData.role === "Customer" ? (
             <Button
               component={Link}
               to="/profile"
@@ -80,6 +80,15 @@ export default function Navbar({
               variant="contained"
             >
               Profile
+            </Button>
+          ) : null}
+          {isAuthenticated && userData.role === "Admin" ? (
+            <Button
+              component={Link}
+              to="/dashboard"
+              color="inherit"
+            >
+              Dashboard
             </Button>
           ) : null}
 

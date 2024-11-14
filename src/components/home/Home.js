@@ -9,7 +9,7 @@ export default function Home() {
     <>
       <FormValidation />
       <Box className="home">
-        <Typography component="h1">
+        <Typography component="h1" color="warning">
           Protect Your Gym, Boost Your Profits
         </Typography>
         <Typography variant="h3" component="h3">
