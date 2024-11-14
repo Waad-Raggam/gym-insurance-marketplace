@@ -18,10 +18,10 @@ import axios from "axios";
 import CircularProgress from "@mui/material/CircularProgress";
 import { useNavigate } from "react-router-dom";
 import DeleteIcon from "@mui/icons-material/Delete";
-
+import EditIcon from "@mui/icons-material/Edit";
 
 function Row(props) {
-  const { plan, onDelete } = props;
+  const { plan, onDelete, onEdit } = props;
   const [open, setOpen] = useState(false);
 
   return (
@@ -43,6 +43,13 @@ function Row(props) {
         <TableCell align="right">${plan.monthlyPremium}</TableCell>
         <TableCell>{plan.planDescription}</TableCell>
         <TableCell align="center">
+          <IconButton
+            aria-label="edit"
+            color="primary"
+            onClick={() => onEdit(plan.insuranceId)}
+          >
+            <EditIcon />
+          </IconButton>
           <IconButton
             aria-label="delete"
             color="error"
@@ -79,9 +86,10 @@ Row.propTypes = {
     monthlyPremium: PropTypes.number.isRequired,
     planDescription: PropTypes.string.isRequired,
     coverageDetails: PropTypes.arrayOf(PropTypes.string).isRequired,
-    insuranceId: PropTypes.number.isRequired, // Assuming insuranceId is a number
+    insuranceId: PropTypes.number.isRequired,
   }).isRequired,
   onDelete: PropTypes.func.isRequired,
+  onEdit: PropTypes.func.isRequired,
 };
 
 function OrderRow(props) {
@@ -216,6 +224,10 @@ export default function Dashboard(props) {
     }
   }
 
+  function handleEditProduct(insuranceId) {
+    navigate(`/editPlan/${insuranceId}`);
+  }
+
   const renderUsersTable = () => (
     <TableContainer component={Paper}>
       <Table aria-label="users table">
@@ -269,6 +281,7 @@ export default function Dashboard(props) {
               key={plan.insuranceId}
               plan={plan}
               onDelete={handleDeleteProduct}
+              onEdit={handleEditProduct}
             />
           ))}
         </TableBody>

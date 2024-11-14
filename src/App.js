@@ -14,6 +14,7 @@ import Cart from "./components/cart/Cart";
 import Orders from "./components/orders/Orders";
 import GymForm from "./components/form/GymForm";
 import InsurancePlanForm from "./components/form/InsurancePlanForm";
+import EditPlanForm from "./components/form/EditPlanForm";
 
 function App() {
   const [response, setResponse] = useState("");
@@ -150,6 +151,10 @@ function App() {
         {
           path: "/plansForm",
           element: <InsurancePlanForm userData={userData} />,
+        },
+        {
+          path: "/editPlan/:insuranceId", 
+          element: <EditPlanForm />,
         },
         {
           path: "/cart",
