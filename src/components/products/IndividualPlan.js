@@ -22,7 +22,7 @@ export default function IndividualPlan() {
     ? queryParams.get("gymId").split(",")
     : [];
 
-  const url = `http://localhost:5125/api/v1/InsurancePlan/${planId}`;
+  const url = `https://gym-insurance-marketplace-backend.onrender.com/api/v1/InsurancePlan/${planId}`;
 
   useEffect(() => {
     function getData() {

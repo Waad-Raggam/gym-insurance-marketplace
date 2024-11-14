@@ -64,7 +64,7 @@ export default function UserLogin() {
         if (decodedToken.role === "Admin") {
           navigate("/dashboard");
         } else {
-          navigate("/gymForm");
+          navigate("/profile");
         }
         window.location.reload();
       })

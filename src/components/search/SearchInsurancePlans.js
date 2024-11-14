@@ -14,7 +14,7 @@ export default function SearchInsurancePlans() {
     if (query.length > 0) {
       try {
         const response = await fetch(
-          `http://localhost:5125/api/v1/InsurancePlan/name?coverageType=${encodeURIComponent(query)}`
+          `https://gym-insurance-marketplace-backend.onrender.com/api/v1/InsurancePlan/name?coverageType=${encodeURIComponent(query)}`
         );
         if (response.ok) {
           const data = await response.json();

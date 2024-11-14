@@ -213,7 +213,7 @@ export default function Dashboard(props) {
   const { productsData, gyms } = props;
   const usersUrl = "http://localhost:5125/api/v1/User/";
   const ordersUrl = "http://localhost:5125/api/v1/GymInsurance";
-  const plansUrl = "http://localhost:5125/api/v1/InsurancePlan/";
+  const plansUrl = "https://gym-insurance-marketplace-backend.onrender.com/api/v1/InsurancePlan/";
   const insuranceUrl = `http://localhost:5125/api/v1/InsurancePlan`; 
   const navigate = useNavigate();
 

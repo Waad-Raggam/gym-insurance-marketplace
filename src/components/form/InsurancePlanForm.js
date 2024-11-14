@@ -53,7 +53,7 @@ export default function InsurancePlanForm() {
     e.preventDefault();
     try {
       const response = await axios.post(
-        "http://localhost:5125/api/v1/InsurancePlan/",
+        "https://gym-insurance-marketplace-backend.onrender.com/api/v1/InsurancePlan/",
         formData,
         {
           headers: {
