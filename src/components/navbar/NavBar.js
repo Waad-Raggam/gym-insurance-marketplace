@@ -48,12 +48,12 @@ export default function Navbar({
         <Box sx={{ display: "flex", gap: 2 }}>
           {isAuthenticated ? (
             <Button component={Link} to="/plans" color="inherit">
-              Plans
+              browse plans
             </Button>
           ) : null}
           {isAuthenticated ? (
             <Button component={Link} to="/gymForm" color="inherit">
-              Gyms
+              Add gym
             </Button>
           ) : null}
           {/* <Button color="inherit" component={Link} to="#services">
@@ -62,6 +62,11 @@ export default function Navbar({
           <Button color="inherit" component={Link} to="#contact">
             Contact
           </Button> */}
+          {isAuthenticated ? (
+            <Button component={Link} to="/orders" color="inherit">
+              Your orders
+            </Button>
+          ) : null}
           {isAuthenticated ? (
             <Button component={Link} to="/cart" color="inherit">
               Cart

@@ -31,31 +31,39 @@ function OrderRow({ order, gymName }) {
             {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
           </IconButton>
         </TableCell>
-        <TableCell component="th" scope="row">
+        <TableCell component="th" scope="row" sx={{ color: "black" }}>
           {order.giId}
         </TableCell>
-        <TableCell>{gymName}</TableCell>
-        <TableCell align="right">
+        <TableCell sx={{ color: "black" }}>{gymName}</TableCell>
+        <TableCell align="right" sx={{ color: "black" }}>
           {order.insuranceIds.length > 0 ? order.insuranceIds.join(", ") : "N/A"}
         </TableCell>
-        <TableCell>{new Date(order.startDate).toLocaleDateString()}</TableCell>
-        <TableCell>{new Date(order.endDate).toLocaleDateString()}</TableCell>
-        <TableCell align="right">${order.premiumAmount}</TableCell>
-        <TableCell>{order.isActive ? "Active" : "Inactive"}</TableCell>
+        <TableCell sx={{ color: "black" }}>
+          {new Date(order.startDate).toLocaleDateString()}
+        </TableCell>
+        <TableCell sx={{ color: "black" }}>
+          {new Date(order.endDate).toLocaleDateString()}
+        </TableCell>
+        <TableCell align="right" sx={{ color: "black" }}>
+          ${order.premiumAmount}
+        </TableCell>
+        <TableCell sx={{ color: "black" }}>
+          {order.isActive ? "Active" : "Inactive"}
+        </TableCell>
       </TableRow>
 
       <TableRow>
         <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={8}>
           <Collapse in={open} timeout="auto" unmountOnExit>
             <Box margin={1}>
-              <Typography variant="h6" gutterBottom component="div">
-                Insurance IDs
+              <Typography variant="h6" gutterBottom component="div" sx={{ color: "black" }}>
+                Insurance Plans
               </Typography>
               <Table size="small" aria-label="insurance-ids">
                 <TableBody>
                   {order.insuranceIds.map((id, index) => (
                     <TableRow key={index}>
-                      <TableCell component="th" scope="row">
+                      <TableCell component="th" scope="row" sx={{ color: "black" }}>
                         {id}
                       </TableCell>
                     </TableRow>
@@ -83,11 +91,10 @@ OrderRow.propTypes = {
   gymName: PropTypes.string.isRequired, 
 };
 
-
 export default function OrdersTable(props) {
   const { userData, gyms } = props;
   const ordersUrl = `http://localhost:5125/api/v1/GymInsurance/user/${userData?.userId}`;
-const [ordersData, setOrdersData] = useState([]);
+  const [ordersData, setOrdersData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -95,7 +102,6 @@ const [ordersData, setOrdersData] = useState([]);
       fetchOrdersData();
     }
   }, [userData]);
-  
 
   function fetchOrdersData() {
     setIsLoading(true);
@@ -128,7 +134,7 @@ const [ordersData, setOrdersData] = useState([]);
 
   return (
     <Box>
-      <Typography variant="h4" gutterBottom>
+      <Typography variant="h4" gutterBottom sx={{ color: "black" }}>
         Orders
       </Typography>
 
@@ -142,13 +148,17 @@ const [ordersData, setOrdersData] = useState([]);
             <TableHead>
               <TableRow>
                 <TableCell />
-                <TableCell>Order ID</TableCell>
-                <TableCell>Gym Name</TableCell>
-                <TableCell align="right">Insurance IDs</TableCell>
-                <TableCell>Start Date</TableCell>
-                <TableCell>End Date</TableCell>
-                <TableCell align="right">Premium Amount</TableCell>
-                <TableCell>Status</TableCell>
+                <TableCell sx={{ color: "black" }}>Order ID</TableCell>
+                <TableCell sx={{ color: "black" }}>Gym Name</TableCell>
+                <TableCell align="right" sx={{ color: "black" }}>
+                  Insurance IDs
+                </TableCell>
+                <TableCell sx={{ color: "black" }}>Start Date</TableCell>
+                <TableCell sx={{ color: "black" }}>End Date</TableCell>
+                <TableCell align="right" sx={{ color: "black" }}>
+                  Premium Amount
+                </TableCell>
+                <TableCell sx={{ color: "black" }}>Status</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>

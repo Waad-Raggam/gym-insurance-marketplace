@@ -26,12 +26,12 @@ export default function Cart(props) {
   const handleCheckout = () => {
     const storedCart = JSON.parse(localStorage.getItem("cart")) || [];
     const gymInsuranceMap = {};
-
+  
     storedCart.forEach((item) => {
       console.log("item gym " + item.gymId);
       console.log("item plan " + item.planId);
       console.log("userid " + userData.userId);
-
+  
       item.gymId.forEach((gymId) => {
         if (!gymInsuranceMap[gymId]) {
           gymInsuranceMap[gymId] = [];
@@ -39,21 +39,31 @@ export default function Cart(props) {
         gymInsuranceMap[gymId].push(item.planId);
       });
     });
-
+  
+    const totalAmount = calculateTotal(); 
+  
+    const today = new Date();
+    const endDate = new Date(today);
+    endDate.setFullYear(today.getFullYear() + 1); 
+  
+    const formatDate = (date) => {
+      return date.toISOString(); 
+    };
+  
     for (const gymId in gymInsuranceMap) {
       const insuranceIds = gymInsuranceMap[gymId];
       const orderData = {
         gymId: gymId,
         userId: userData.userId,
         insuranceIds: insuranceIds,
-        startDate: "2024-11-02T06:46:25.075Z",
-        endDate: "2024-11-02T06:46:25.075Z",
-        premiumAmount: 0,
+        startDate: formatDate(today), 
+        endDate: formatDate(endDate), 
+        premiumAmount: parseFloat(totalAmount), 
         isActive: true,
       };
-
+  
       console.log("orderData:", orderData);
-
+  
       const orderUrl = "http://localhost:5125/api/v1/GymInsurance";
       axios
         .post(orderUrl, orderData, {
@@ -81,6 +91,7 @@ export default function Cart(props) {
         });
     }
   };
+  
 
   const handleClearCart = () => {
     clearCart();
