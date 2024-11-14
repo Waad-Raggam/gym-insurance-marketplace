@@ -86,6 +86,9 @@ export default function UserRegistration() {
             error={!!errors.name}
             helperText={errors.name?.message}
             fullWidth
+            InputProps={{
+              style: { color: "#000000" },
+            }}
           />
 
           <TextField
@@ -94,6 +97,9 @@ export default function UserRegistration() {
             error={!!errors.email}
             helperText={errors.email?.message}
             fullWidth
+            InputProps={{
+              style: { color: "#000000" },
+            }}
           />
 
           <TextField
@@ -102,6 +108,9 @@ export default function UserRegistration() {
             error={!!errors.phoneNumber}
             helperText={errors.phoneNumber?.message}
             fullWidth
+            InputProps={{
+              style: { color: "#000000" },
+            }}
           />
 
           <FormControl variant="standard" fullWidth>
@@ -120,6 +129,9 @@ export default function UserRegistration() {
                   </IconButton>
                 </InputAdornment>
               }
+              sx={{
+                color: "#000000", 
+              }}
             />
             <Typography color="error" variant="body2">
               {errors.password?.message}
@@ -135,6 +147,9 @@ export default function UserRegistration() {
             error={!!errors.role}
             helperText={errors.role?.message}
             fullWidth
+            InputProps={{
+              style: { color: "#000000" },
+            }}
           >
             {/* <option value="" style={{ color: "#9e9e9e" }}>
               Select Role

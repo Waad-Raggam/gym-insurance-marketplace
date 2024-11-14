@@ -88,6 +88,9 @@ export default function UserLogin() {
             error={!!errors.email}
             helperText={errors.email?.message}
             fullWidth
+            InputProps={{
+              style: { color: "#000000" },
+            }}
           />
           <FormControl variant="standard" fullWidth>
             <InputLabel>Password</InputLabel>
@@ -105,6 +108,9 @@ export default function UserLogin() {
                   </IconButton>
                 </InputAdornment>
               }
+              sx={{
+                color: "#000000", 
+              }}
             />
             <Typography color="error" variant="body2">
               {errors.password?.message}
