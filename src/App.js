@@ -24,9 +24,9 @@ function App() {
   const [gyms, setGyms] = useState([]);
   const [isGymsLoading, setIsGymsLoading] = useState(true);
 
-  const productUrl = "http://localhost:5125/api/v1/InsurancePlan/";
-  const profileUrl = "http://localhost:5125/api/v1/User/Profile/";
-  const gymsUrl = "http://localhost:5125/api/v1/Gym/";
+  const productUrl = "https://gym-insurance-marketplace-backend.onrender.com/api/v1/InsurancePlan/";
+  const profileUrl = "https://gym-insurance-marketplace-backend.onrender.com/api/v1/User/Profile/";
+  const gymsUrl = "https://gym-insurance-marketplace-backend.onrender.com/api/v1/Gym/";
 
   useEffect(() => {
     getDataFromServer();
@@ -76,7 +76,7 @@ function App() {
       if (userData?.userId && userData.role === "Customer") {
         setIsGymsLoading(true);
         const token = localStorage.getItem("token");
-        const gymsUrl = `http://localhost:5125/api/v1/Gym/user/${userData.userId}`;
+        const gymsUrl = `https://gym-insurance-marketplace-backend.onrender.com/api/v1/Gym/user/${userData.userId}`;
 
         try {
           const gymsResponse = await axios.get(gymsUrl, {

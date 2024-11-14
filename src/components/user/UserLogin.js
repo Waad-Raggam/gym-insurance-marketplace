@@ -50,7 +50,7 @@ export default function UserLogin() {
 
   const onSubmit = (data) => {
     axios
-      .post("http://localhost:5125/api/v1/User/LogIn", data)
+      .post("https://gym-insurance-marketplace-backend.onrender.com/api/v1/User/LogIn", data)
       .then((response) => {
         const token = response.data;
         localStorage.setItem("token", token);

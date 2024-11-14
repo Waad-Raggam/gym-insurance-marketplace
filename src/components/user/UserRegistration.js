@@ -54,7 +54,7 @@ export default function UserRegistration() {
   });
 
   const onSubmit = (data) => {
-    const signUpUrl = "http://localhost:5125/api/v1/User/SignUp";
+    const signUpUrl = "https://gym-insurance-marketplace-backend.onrender.com/api/v1/User/SignUp";
     axios
       .post(signUpUrl, data)
       .then((response) => {

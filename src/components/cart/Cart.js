@@ -64,7 +64,7 @@ export default function Cart(props) {
   
       console.log("orderData:", orderData);
   
-      const orderUrl = "http://localhost:5125/api/v1/GymInsurance";
+      const orderUrl = "https://gym-insurance-marketplace-backend.onrender.com/api/v1/GymInsurance";
       axios
         .post(orderUrl, orderData, {
           headers: {

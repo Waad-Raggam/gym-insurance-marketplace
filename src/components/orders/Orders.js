@@ -109,8 +109,8 @@ OrderRow.propTypes = {
 
 export default function OrdersTable(props) {
   const { userData, gyms } = props;
-  const ordersUrl = `http://localhost:5125/api/v1/GymInsurance/user/${userData?.userId}`;
-  const insuranceUrl = `http://localhost:5125/api/v1/InsurancePlan`; 
+  const ordersUrl = `https://gym-insurance-marketplace-backend.onrender.com/api/v1/GymInsurance/user/${userData?.userId}`;
+  const insuranceUrl = `https://gym-insurance-marketplace-backend.onrender.com/api/v1/InsurancePlan`; 
   const [ordersData, setOrdersData] = useState([]);
   const [insuranceData, setInsuranceData] = useState({});
   const [isLoading, setIsLoading] = useState(true);

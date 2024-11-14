@@ -63,7 +63,7 @@ export default function GymForm(props) {
 
     try {
       const response = await axios.post(
-        "http://localhost:5125/api/v1/Gym/",
+        "https://gym-insurance-marketplace-backend.onrender.com/api/v1/Gym/",
         formDataWithUserId,
         {
           headers: {
