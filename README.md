@@ -1,4 +1,4 @@
-# Gym Insurance Dashboard
+# Gym Insurance Marketplace
 
 The **Gym Insurance Marketplace** is a React-based web application designed for managing gym insurance plans, user information, and orders. The app uses Material-UI components for a modern, responsive design and Axios for API communication.
 For more information, feel free to view the [slides](https://docs.google.com/presentation/d/1kx8rACSHW8D5jlP59geQWJgpVhX3G4-PFuJRg6gmWno/edit?usp=sharing) 
