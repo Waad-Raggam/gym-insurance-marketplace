@@ -34,9 +34,8 @@ For more information, feel free to view the [slides](https://docs.google.com/pre
 - **React**: Frontend framework for building the user interface.
 - **Material-UI (MUI)**: For a modern and responsive UI design.
 - **Axios**: To handle HTTP requests and API integration.
-- **React Router DOM**: For navigation and routing.
-- **PropTypes**: For component type-checking and validation.
-- **JavaScript ES6**: For modern, clean coding practices.
+- **C#**: Programming language used for server-side logic.
+- **ASP.NET Core**: Cross-platform framework for building scalable, high-performance web APIs and services.
 
 
 
