@@ -1,48 +1,43 @@
-# Project: Frontend for E-commerce Website
+# Gym Insurance Dashboard
 
-This project is a frontend for an e-commerce website, developed using modern web technologies. It provides an interactive platform for users to browse and purchase products, while also offering a management dashboard for administrators to handle products, users, and orders. The project is built with a focus on a smooth and intuitive user experience, with added functionalities for searching, filtering, and managing products.
+The **Gym Insurance Marketplace** is a React-based web application designed for managing gym insurance plans, user information, and orders. The app uses Material-UI components for a modern, responsive design and Axios for API communication.
 
-***Deadline: 14/11/2024***
+## Deployed Link
+- **Live Application**: [Gym Insurance Marketplace](https://gym-insurance-marketplace-fe.onrender.com)
 
-### Level 1: Basic Requirements
+## Features
 
-**Pages to Create:**
+1. **Insurance Plan Management**:
+   - View a list of insurance plans.
+   - Edit and delete insurance plans.
+   - Expand plans to see detailed coverage information.
 
-1. Home page
-2. Product page(list all the products)
-3. Product Detail(contain the details of a product)
-4. Dashboard page
+2. **Order Management**:
+   - View gym insurance orders.
+   - Expand rows to see associated insurance details.
 
-**Functionalities for a Visitor:**
+3. **User Management**:
+   - View registered users with details like username, email, and role.
+   - Delete users.
 
-- Get list of products
-- Search products by name
-- Filter products price
-- Add products to a cart
-- Remove products from a cart
+4. **API Integration**:
+   - Fetches user, order, and insurance plan data from APIs.
+   - Implements token-based authentication for API requests.
 
-**Functionalities for an Admin:**
+5. **Interactive UI**:
+   - Collapsible rows for detailed views.
+   - Action buttons for CRUD operations (edit and delete).
+   - Loading spinners during data fetches.
 
-- Add a new product, update info of a product, remove a product
+## Technologies Used
 
-### Level 2: Additional Requirements
+- **React**: Frontend framework for building the user interface.
+- **Material-UI (MUI)**: For a modern and responsive UI design.
+- **Axios**: To handle HTTP requests and API integration.
+- **React Router DOM**: For navigation and routing.
+- **PropTypes**: For component type-checking and validation.
+- **JavaScript ES6**: For modern, clean coding practices.
 
-**Authentication:**
 
-- Implement register and login functionality via email and password
-- Protect the routes based on login and admin status
 
-**Functionalities for an Admin:**
-
-- list all users, delete a user.
-- list all orders
-
-### Level 3: Bonus Requirement (Optional)
-
-- Messages, show loading, success, and error messages (e.g., when loading products list or adding new product)
-- Implement pagination feature
-- Create a Profile Page (only available if user logs in), implement editing user profile feature (user can change first name, last name)
-
-`Please note that the bonus requirements and reviews are optional and can be completed if you have additional time and advanced skills.`
-
-Happy coding!
+Feel free to reach out if you encounter any issues or have suggestions for improvements! 😊

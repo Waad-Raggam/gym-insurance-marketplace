@@ -9,15 +9,22 @@ export default function Home() {
     <>
       <FormValidation />
       <Box className="home">
-        <Typography component="h1" color="warning">
-          Protect Your Gym, Boost Your Profits
-        </Typography>
-        <Typography variant="h3" component="h3">
-          Comprehensive coverage tailored for fitness businesses
-        </Typography>
-        <Button color="warning" variant="contained" size="large">
-          Get Insured Now
-        </Button>
+        <Box className="overlay">
+          <Typography variant="h2" component="h1" color="warning" gutterBottom>
+            Protect Your Gym, Boost Your Profits
+          </Typography>
+          <Typography variant="h5" component="h3" color="inherit" gutterBottom>
+            Comprehensive coverage tailored for fitness businesses
+          </Typography>
+          <Button 
+            color="warning" 
+            variant="contained" 
+            size="large" 
+            className="cta-button"
+          >
+            Get Insured Now
+          </Button>
+        </Box>
       </Box>
       <MainContent />
     </>

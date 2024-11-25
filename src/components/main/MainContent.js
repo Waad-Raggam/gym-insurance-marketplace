@@ -9,7 +9,7 @@ export default function MainContent() {
       <Card sx={{ maxWidth: 300, fontFamily: 'Oswald, sans-serif' }}>
         <CardActionArea>
           <CardContent>
-            <Typography variant="h4" gutterBottom sx={{ fontFamily: 'Oswald, sans-serif' }}>
+            <Typography variant="h4" gutterBottom sx={{  color: "text.secondary",fontFamily: 'Oswald, sans-serif' }}>
               About Us
             </Typography>
             <Typography variant="body2" sx={{ color: "text.secondary", fontFamily: 'Roboto Condensed, sans-serif' }}>
@@ -27,7 +27,7 @@ export default function MainContent() {
       <Card sx={{ maxWidth: 300, fontFamily: 'Oswald, sans-serif' }}>
         <CardActionArea>
           <CardContent>
-            <Typography variant="h4" gutterBottom sx={{ fontFamily: 'Oswald, sans-serif' }}>
+            <Typography variant="h4" gutterBottom sx={{  color: "text.secondary",fontFamily: 'Oswald, sans-serif' }}>
               Our Services
             </Typography>
             <Typography variant="body2" sx={{ color: "text.secondary", fontFamily: 'Roboto Condensed, sans-serif' }}>
@@ -51,7 +51,7 @@ export default function MainContent() {
       <Card sx={{ maxWidth: 300, fontFamily: 'Oswald, sans-serif' }}>
         <CardActionArea>
           <CardContent>
-            <Typography variant="h4" gutterBottom sx={{ fontFamily: 'Oswald, sans-serif' }}>
+            <Typography variant="h4" gutterBottom sx={{  color: "text.secondary",fontFamily: 'Oswald, sans-serif' }}>
               Contact Us
             </Typography>
             <Typography variant="body2" sx={{ color: "text.secondary", fontFamily: 'Roboto Condensed, sans-serif' }}>
